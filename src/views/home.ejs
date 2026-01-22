@@ -1,0 +1,73 @@
+<% layout('layouts/layout') %>
+<section class="hero">
+  <div class="container">
+    <h1>Thủ Thuật & Cứu Hộ Máy Tính</h1>
+    <p>Cổng thông tin chia sẻ thủ thuật, cứu hộ, hỗ trợ Windows, Office, mạng, bảo mật, tăng tốc, sửa lỗi.</p>
+    <div class="cta-group">
+      <a href="/tips" class="btn btn-primary">Xem thủ thuật</a>
+      <a href="/rescue" class="btn btn-secondary">Tạo yêu cầu cứu hộ</a>
+    </div>
+  </div>
+</section>
+<section class="featured-tips container">
+  <h2>Thủ thuật nổi bật</h2>
+  <div class="card-list">
+    <% featuredTips.forEach(tip => { %>
+      <div class="card">
+        <a href="/tip/<%= tip.slug %>">
+          <img src="<%= tip.thumbnail %>" alt="<%= tip.title %>">
+          <h3><%= tip.title %></h3>
+          <p><%= tip.excerpt %></p>
+        </a>
+      </div>
+    <% }) %>
+  </div>
+</section>
+<section class="categories container">
+  <h2>Danh mục thủ thuật</h2>
+  <div class="card-list">
+    <% categories.forEach(cat => { %>
+      <div class="card">
+        <a href="/category/<%= cat.slug %>"><%= cat.name %></a>
+      </div>
+    <% }) %>
+  </div>
+</section>
+<section class="rescue-steps container">
+  <h2>Quy trình cứu hộ</h2>
+  <ol class="steps">
+    <li>1. Gửi yêu cầu cứu hộ</li>
+    <li>2. Kỹ thuật viên liên hệ xác nhận</li>
+    <li>3. Xử lý & hỗ trợ từ xa hoặc tại chỗ</li>
+    <li>4. Hoàn tất & đánh giá</li>
+  </ol>
+</section>
+<section class="faq container">
+  <h2>Câu hỏi thường gặp</h2>
+  <div class="accordion">
+    <div class="accordion-item">
+      <button class="accordion-title">Dịch vụ cứu hộ gồm những gì?</button>
+      <div class="accordion-content">Hỗ trợ xử lý sự cố phần mềm, cài đặt, tối ưu, bảo mật, mạng, v.v...</div>
+    </div>
+    <div class="accordion-item">
+      <button class="accordion-title">Tôi có phải trả phí không?</button>
+      <div class="accordion-content">Nhiều thủ thuật miễn phí, cứu hộ có thể tính phí tùy trường hợp.</div>
+    </div>
+    <div class="accordion-item">
+      <button class="accordion-title">Làm sao để liên hệ kỹ thuật?</button>
+      <div class="accordion-content">Gửi phiếu cứu hộ hoặc liên hệ qua form bên dưới.</div>
+    </div>
+  </div>
+</section>
+<section class="contact container">
+  <h2>Liên hệ</h2>
+  <form method="post" action="/contact">
+    <input type="text" name="name" placeholder="Họ tên" required>
+    <input type="email" name="email" placeholder="Email" required>
+    <textarea name="message" placeholder="Nội dung" required></textarea>
+    <button type="submit" class="btn btn-primary">Gửi liên hệ</button>
+  </form>
+</section>
+<div class="container flex">
+  <%- include('partials/sidebar', { topTips, tags, stats }) %>
+</div>

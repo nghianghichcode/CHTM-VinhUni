@@ -1,0 +1,9 @@
+body, .site-header, .site-footer, .card, .accordion, .sidebar {
+  background: #18181b !important;
+  color: #e5e7eb !important;
+}
+a, .tags a { color: #60a5fa !important; }
+.card, .accordion, .sidebar { box-shadow: 0 2px 8px rgba(0,0,0,0.3) !important; }
+input, textarea, select { background: #27272a !important; color: #e5e7eb !important; border: 1px solid #444 !important; }
+.alert.success { background: #134e4a !important; color: #a7f3d0 !important; }
+.alert.error { background: #7f1d1d !important; color: #fee2e2 !important; }

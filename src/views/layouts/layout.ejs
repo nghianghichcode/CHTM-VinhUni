@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="vi" class="<%= (locals.darkMode ? 'dark' : '') %>">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title><%= meta?.title || 'Thủ Thuật & Cứu Hộ Máy Tính' %></title>
+  <meta name="description" content="<%= meta?.description || '' %>">
+  <meta property="og:title" content="<%= meta?.title || '' %>">
+  <meta property="og:description" content="<%= meta?.description || '' %>">
+  <meta property="og:image" content="<%= meta?.image || '/images/og-default.png' %>">
+  <meta property="og:url" content="<%= meta?.url || '' %>">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/dark.css" id="dark-css" disabled>
+  <script src="/js/darkmode.js" defer></script>
+  <script src="/js/main.js" defer></script>
+</head>
+<body>
+  <%- include('../partials/header') %>
+  <main>
+    <%- include('../partials/flash') %>
+    <%- body %>
+  </main>
+  <%- include('../partials/footer') %>
+</body>
+</html>

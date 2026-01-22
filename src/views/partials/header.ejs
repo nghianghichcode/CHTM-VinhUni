@@ -1,0 +1,21 @@
+<header class="site-header">
+  <div class="container flex-between">
+    <a href="/" class="logo">
+      <img src="/images/logo.png" alt="Logo" height="40">
+      <span>Cổng Thủ Thuật & Cứu Hộ</span>
+    </a>
+    <nav class="main-nav">
+      <a href="/tips">Thủ thuật</a>
+      <a href="/rescue">Cứu hộ</a>
+      <a href="/faq">FAQ</a>
+      <a href="/contact">Liên hệ</a>
+      <% if (user) { %>
+        <a href="/profile">Tài khoản</a>
+        <a href="/auth/logout">Đăng xuất</a>
+      <% } else { %>
+        <a href="/auth/login" class="btn">Đăng nhập</a>
+      <% } %>
+      <button id="dark-toggle" title="Chuyển dark mode">🌓</button>
+    </nav>
+  </div>
+</header>
