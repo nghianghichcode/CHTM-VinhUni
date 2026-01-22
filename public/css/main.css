@@ -71,6 +71,7 @@ a.btn-secondary, button.btn-secondary {
   position: sticky;
   top: 0;
   z-index: 10;
+  -webkit-backdrop-filter: blur(8px);
   backdrop-filter: blur(8px);
 }
 .site-header .container, .site-footer .container {
