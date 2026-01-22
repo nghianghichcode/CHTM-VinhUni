@@ -1,17 +1,34 @@
 const mongoose = require('mongoose');
 
-module.exports = function connectDB() {
+mongoose.set('bufferCommands', false);
+
+let cached = global.__mongooseConn;
+if (!cached) {
+  cached = global.__mongooseConn = { conn: null, promise: null };
+}
+
+module.exports = async function connectDB() {
   if (!process.env.MONGODB_URI) {
     console.warn('MONGODB_URI is not set. Skipping MongoDB connection.');
-    return;
+    return null;
   }
-  mongoose.connect(process.env.MONGODB_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-  }).then(() => {
-    console.log('MongoDB connected');
-  }).catch(err => {
-    console.error('MongoDB connection error:', err);
-    if (!process.env.VERCEL) process.exit(1);
-  });
+  if (cached.conn) return cached.conn;
+
+  if (!cached.promise) {
+    cached.promise = mongoose.connect(process.env.MONGODB_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      serverSelectionTimeoutMS: 8000
+    }).then((mongooseInstance) => {
+      console.log('MongoDB connected');
+      return mongooseInstance;
+    }).catch(err => {
+      console.error('MongoDB connection error:', err);
+      if (!process.env.VERCEL) process.exit(1);
+      throw err;
+    });
+  }
+
+  cached.conn = await cached.promise;
+  return cached.conn;
 };

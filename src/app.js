@@ -17,7 +17,10 @@ const { setLocals } = require('./middlewares/locals');
 const app = express();
 
 // DB connect
-require('./config/db')();
+const connectDB = require('./config/db');
+connectDB().catch(err => {
+  console.error('MongoDB connect failed:', err);
+});
 
 // Helmet security
 app.use(helmet());
