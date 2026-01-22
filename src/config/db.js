@@ -1,6 +1,10 @@
 const mongoose = require('mongoose');
 
 module.exports = function connectDB() {
+  if (!process.env.MONGODB_URI) {
+    console.warn('MONGODB_URI is not set. Skipping MongoDB connection.');
+    return;
+  }
   mongoose.connect(process.env.MONGODB_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true
@@ -8,6 +12,6 @@ module.exports = function connectDB() {
     console.log('MongoDB connected');
   }).catch(err => {
     console.error('MongoDB connection error:', err);
-    process.exit(1);
+    if (!process.env.VERCEL) process.exit(1);
   });
 };
