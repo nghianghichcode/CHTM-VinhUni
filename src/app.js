@@ -39,16 +39,19 @@ app.use(expressLayouts);
 app.set('layout', 'layouts/layout');
 
 // Session
-app.use(session({
+const sessionOptions = {
   secret: process.env.SESSION_SECRET || 'secret',
   resave: false,
   saveUninitialized: false,
-  store: MongoStore.create({
+  cookie: { maxAge: 1000 * 60 * 60 * 24 }
+};
+if (process.env.MONGODB_URI) {
+  sessionOptions.store = MongoStore.create({
     mongoUrl: process.env.MONGODB_URI,
     collectionName: 'sessions'
-  }),
-  cookie: { maxAge: 1000 * 60 * 60 * 24 }
-}));
+  });
+}
+app.use(session(sessionOptions));
 
 // Flash messages
 app.use(flash());
