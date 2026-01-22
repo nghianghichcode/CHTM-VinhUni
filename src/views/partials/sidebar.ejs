@@ -1,0 +1,26 @@
+<aside class="sidebar">
+  <section>
+    <h3>Top Thủ Thuật</h3>
+    <ul>
+      <% topTips.forEach(tip => { %>
+        <li><a href="/tip/<%= tip.slug %>"><%= tip.title %></a></li>
+      <% }) %>
+    </ul>
+  </section>
+  <section>
+    <h3>Tags</h3>
+    <div class="tags">
+      <% tags.forEach(tag => { %>
+        <a href="/tag/<%= tag.slug %>"><%= tag.name %></a>
+      <% }) %>
+    </div>
+  </section>
+  <section>
+    <h3>Thống kê</h3>
+    <ul>
+      <li><b><%= stats.tips %></b> thủ thuật</li>
+      <li><b><%= stats.tickets %></b> phiếu cứu hộ</li>
+      <li><b><%= stats.users %></b> thành viên</li>
+    </ul>
+  </section>
+</aside>

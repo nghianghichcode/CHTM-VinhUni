@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Admin - <%= meta?.title || 'Dashboard' %></title>
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+  <header class="admin-header">
+    <a href="/admin" class="logo">Admin Panel</a>
+    <nav>
+      <a href="/admin/tips">Tips</a>
+      <a href="/admin/categories">Categories</a>
+      <a href="/admin/tags">Tags</a>
+      <a href="/admin/tickets">Tickets</a>
+      <a href="/">Về trang chủ</a>
+    </nav>
+  </header>
+  <main>
+    <%- include('../partials/flash') %>
+    <%- body %>
+  </main>
+</body>
+</html>
