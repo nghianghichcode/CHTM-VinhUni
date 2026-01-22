@@ -1,0 +1,439 @@
+require('dotenv').config();
+const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
+const slugifyVN = require('../src/utils/slugify');
+
+const User = require('../src/models/User');
+const Category = require('../src/models/Category');
+const Tag = require('../src/models/Tag');
+const Tip = require('../src/models/Tip');
+const Ticket = require('../src/models/Ticket');
+
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://<redacted>';
+
+const categories = [
+  'Windows', 'Office', 'Driver', 'Mạng', 'Bảo mật', 'Tăng tốc'
+].map(name => ({ name, slug: slugifyVN(name) }));
+
+const tags = [
+  'Cài đặt', 'Sửa lỗi', 'Tối ưu', 'Bảo vệ', 'WiFi', 'USB', 'Phần mềm', 'Registry', 'Update', 'Diệt virus', 'SSD', 'Pin'
+].map(name => ({ name, slug: slugifyVN(name) }));
+
+const tips = [
+  // 25 bài mẫu, mỗi bài 1-2 dòng, chia đều category/tags
+  {
+    title: 'Cách tăng tốc khởi động Windows 10',
+    excerpt: 'Hướng dẫn tắt các chương trình khởi động cùng Windows để máy tính chạy nhanh hơn.',
+    content: '<h2>Tắt chương trình khởi động</h2><p>Mở Task Manager &gt; Startup, tắt các app không cần thiết.</p>',
+    thumbnail: '/images/og-default.png',
+    category: 'Windows',
+    tags: ['Tối ưu', 'Cài đặt'],
+    isFeatured: true
+  },
+  {
+    title: 'Sửa lỗi không nhận USB trên Windows',
+    excerpt: 'Khắc phục lỗi máy tính không nhận USB bằng Device Manager.',
+    content: '<h2>Kiểm tra Device Manager</h2><p>Uninstall driver USB và restart máy.</p>',
+    thumbnail: '/images/og-default.png',
+    category: 'Windows',
+    tags: ['Sửa lỗi', 'USB'],
+    isFeatured: true
+  },
+  {
+    title: 'Cách cài Office 2019 bản quyền',
+    excerpt: 'Các bước tải và cài đặt Office 2019 chính hãng.',
+    content: '<h2>Tải Office</h2><p>Truy cập trang Microsoft, tải file ISO và cài đặt.</p>',
+    thumbnail: '/images/og-default.png',
+    category: 'Office',
+    tags: ['Cài đặt', 'Phần mềm'],
+    isFeatured: true
+  },
+  {
+    title: 'Khắc phục lỗi font chữ trong Word',
+    excerpt: 'Sửa lỗi font chữ bị lỗi khi mở file Word.',
+    content: '<h2>Cài font tiếng Việt</h2><p>Tải font Arial, Times New Roman, cài vào Windows.</p>',
+    thumbnail: '/images/og-default.png',
+    category: 'Office',
+    tags: ['Sửa lỗi', 'Cài đặt'],
+    isFeatured: false
+  },
+  {
+    title: 'Cách cập nhật driver tự động',
+    excerpt: 'Sử dụng Windows Update để cập nhật driver mới nhất.',
+    content: '<h2>Windows Update</h2><p>Vào Settings &gt; Update &amp; Security &gt; Check for updates.</p>',
+    thumbnail: '/images/og-default.png',
+    category: 'Driver',
+    tags: ['Update', 'Cài đặt'],
+    isFeatured: false
+  },
+  {
+    title: 'Sửa lỗi mất mạng trên laptop',
+    excerpt: 'Cách reset card mạng khi bị mất kết nối.',
+    content: '<h2>Reset card mạng</h2><p>Vào Device Manager, disable rồi enable lại card mạng.</p>',
+    thumbnail: '/images/og-default.png',
+    category: 'Mạng',
+    tags: ['Sửa lỗi', 'WiFi'],
+    isFeatured: false
+  },
+  {
+    title: 'Tăng tốc độ WiFi cho máy tính',
+    excerpt: 'Một số mẹo giúp WiFi ổn định và nhanh hơn.',
+    content: '<h2>Đặt lại router</h2><p>Khởi động lại router, đặt vị trí gần máy tính.</p>',
+    thumbnail: '/images/og-default.png',
+    category: 'Mạng',
+    tags: ['Tối ưu', 'WiFi'],
+    isFeatured: false
+  },
+  {
+    title: 'Bảo vệ máy tính khỏi virus',
+    excerpt: 'Các bước cơ bản để bảo vệ máy tính khỏi phần mềm độc hại.',
+    content: '<h2>Cài phần mềm diệt virus</h2><p>Dùng Windows Defender hoặc phần mềm uy tín.</p>',
+    thumbnail: '/images/og-default.png',
+    category: 'Bảo mật',
+    tags: ['Bảo vệ', 'Diệt virus'],
+    isFeatured: true
+  },
+  {
+    title: 'Cách kiểm tra pin laptop',
+    excerpt: 'Kiểm tra tình trạng pin bằng lệnh Windows.',
+    content: '<h2>powercfg /batteryreport</h2><p>Mở CMD, nhập lệnh trên để xuất báo cáo pin.</p>',
+    thumbnail: '/images/og-default.png',
+    category: 'Tăng tốc',
+    tags: ['Pin', 'Tối ưu'],
+    isFeatured: false
+  },
+  {
+    title: 'Tối ưu SSD cho Windows 11',
+    excerpt: 'Thiết lập tối ưu giúp SSD bền và nhanh hơn.',
+    content: '<h2>Chống phân mảnh</h2><p>Không nên chống phân mảnh SSD, chỉ optimize.</p>',
+    thumbnail: '/images/og-default.png',
+    category: 'Tăng tốc',
+    tags: ['SSD', 'Tối ưu'],
+    isFeatured: false
+  },
+  {
+    title: 'Cách bật/tắt Windows Defender',
+    excerpt: 'Hướng dẫn bật hoặc tắt tạm thời Windows Defender.',
+    content: '<h2>Settings &gt; Update &amp; Security &gt; Windows Security</h2>',
+    thumbnail: '/images/og-default.png',
+    category: 'Bảo mật',
+    tags: ['Bảo vệ', 'Cài đặt'],
+    isFeatured: false
+  },
+  {
+    title: 'Sửa lỗi không cài được phần mềm',
+    excerpt: 'Khắc phục lỗi khi cài app bị báo lỗi.',
+    content: '<h2>Chạy với quyền admin</h2><p>Chuột phải file setup &gt; Run as administrator.</p>',
+    thumbnail: '/images/og-default.png',
+    category: 'Windows',
+    tags: ['Sửa lỗi', 'Phần mềm'],
+    isFeatured: false
+  },
+  {
+    title: 'Cách reset Windows về mặc định',
+    excerpt: 'Khôi phục Windows về trạng thái ban đầu.',
+    content: '<h2>Reset this PC</h2><p>Settings &gt; Update &amp; Security &gt; Recovery.</p>',
+    thumbnail: '/images/og-default.png',
+    category: 'Windows',
+    tags: ['Cài đặt', 'Sửa lỗi'],
+    isFeatured: false
+  },
+  {
+    title: 'Tăng tốc khởi động Office',
+    excerpt: 'Tắt add-in không cần thiết để Office mở nhanh hơn.',
+    content: '<h2>Quản lý Add-in</h2><p>File &gt; Options &gt; Add-ins.</p>',
+    thumbnail: '/images/og-default.png',
+    category: 'Office',
+    tags: ['Tối ưu', 'Phần mềm'],
+    isFeatured: false
+  },
+  {
+    title: 'Cách update Office tự động',
+    excerpt: 'Bật tính năng tự động cập nhật Office.',
+    content: '<h2>Account &gt; Update Options</h2>',
+    thumbnail: '/images/og-default.png',
+    category: 'Office',
+    tags: ['Update', 'Cài đặt'],
+    isFeatured: false
+  },
+  {
+    title: 'Sửa lỗi không vào được mạng LAN',
+    excerpt: 'Kiểm tra IP, reset TCP/IP.',
+    content: '<h2>Command Prompt</h2><p>ipconfig /release &amp; /renew</p>',
+    thumbnail: '/images/og-default.png',
+    category: 'Mạng',
+    tags: ['Sửa lỗi', 'Mạng'],
+    isFeatured: false
+  },
+  {
+    title: 'Cách bật/tắt Bluetooth trên laptop',
+    excerpt: 'Hướng dẫn nhanh bật/tắt Bluetooth.',
+    content: '<h2>Settings &gt; Devices &gt; Bluetooth</h2>',
+    thumbnail: '/images/og-default.png',
+    category: 'Windows',
+    tags: ['Cài đặt', 'Tối ưu'],
+    isFeatured: false
+  },
+  {
+    title: 'Tối ưu Registry để tăng tốc',
+    excerpt: 'Một số tweak Registry giúp Windows mượt hơn.',
+    content: '<h2>Registry Editor</h2><p>Chỉnh sửa cẩn thận, backup trước khi làm.</p>',
+    thumbnail: '/images/og-default.png',
+    category: 'Tăng tốc',
+    tags: ['Registry', 'Tối ưu'],
+    isFeatured: false
+  },
+  {
+    title: 'Cách kiểm tra driver còn thiếu',
+    excerpt: 'Dùng Device Manager để kiểm tra driver.',
+    content: '<h2>Device Manager</h2><p>Xem dấu chấm than vàng.</p>',
+    thumbnail: '/images/og-default.png',
+    category: 'Driver',
+    tags: ['Sửa lỗi', 'Update'],
+    isFeatured: false
+  },
+  {
+    title: 'Cách backup dữ liệu trước khi cài lại Win',
+    excerpt: 'Sao lưu dữ liệu quan trọng trước khi cài lại.',
+    content: '<h2>Sao lưu ra USB/HDD</h2>',
+    thumbnail: '/images/og-default.png',
+    category: 'Windows',
+    tags: ['Cài đặt', 'USB'],
+    isFeatured: false
+  },
+  {
+    title: 'Cách diệt virus bằng Safe Mode',
+    excerpt: 'Khởi động vào Safe Mode để diệt virus hiệu quả.',
+    content: '<h2>Safe Mode</h2><p>F8 khi khởi động máy.</p>',
+    thumbnail: '/images/og-default.png',
+    category: 'Bảo mật',
+    tags: ['Diệt virus', 'Bảo vệ'],
+    isFeatured: false
+  },
+  {
+    title: 'Cách kiểm tra nhiệt độ CPU',
+    excerpt: 'Dùng phần mềm HWMonitor hoặc BIOS.',
+    content: '<h2>HWMonitor</h2><p>Tải và cài đặt HWMonitor.</p>',
+    thumbnail: '/images/og-default.png',
+    category: 'Tăng tốc',
+    tags: ['Tối ưu', 'Phần mềm'],
+    isFeatured: false
+  },
+  {
+    title: 'Cách cài driver thủ công',
+    excerpt: 'Tải driver từ trang chủ và cài đặt.',
+    content: '<h2>Trang chủ hãng</h2><p>Chọn đúng model máy.</p>',
+    thumbnail: '/images/og-default.png',
+    category: 'Driver',
+    tags: ['Cài đặt', 'Driver'],
+    isFeatured: false
+  },
+  {
+    title: 'Cách kiểm tra bản quyền Windows',
+    excerpt: 'Kiểm tra trạng thái bản quyền bằng lệnh CMD.',
+    content: '<h2>slmgr /xpr</h2><p>Mở CMD, nhập lệnh trên.</p>',
+    thumbnail: '/images/og-default.png',
+    category: 'Windows',
+    tags: ['Cài đặt', 'Sửa lỗi'],
+    isFeatured: false
+  },
+  {
+    title: 'Cách bật/tắt update Windows',
+    excerpt: 'Bật/tắt Windows Update trong Services.',
+    content: '<h2>services.msc</h2><p>Tìm Windows Update, chọn Disable/Enable.</p>',
+    thumbnail: '/images/og-default.png',
+    category: 'Windows',
+    tags: ['Update', 'Cài đặt'],
+    isFeatured: false
+  }
+];
+
+const users = [
+  {
+    name: 'Admin',
+    email: 'admin@congthuthuat.vn',
+    password: 'admin123',
+    role: 'admin'
+  },
+  {
+    name: 'Nguyễn Văn A',
+    email: 'user1@congthuthuat.vn',
+    password: 'user123',
+    role: 'user'
+  },
+  {
+    name: 'Trần Thị B',
+    email: 'user2@congthuthuat.vn',
+    password: 'user123',
+    role: 'user'
+  }
+];
+
+const tickets = [
+  {
+    name: 'Nguyễn Văn A',
+    phone: '0912345678',
+    email: 'user1@congthuthuat.vn',
+    deviceType: 'Laptop',
+    os: 'Windows 10',
+    urgency: 'high',
+    location: 'Hà Nội',
+    preferredTime: 'Sáng',
+    description: 'Máy bị chậm, nghi nhiễm virus.',
+    attachmentUrl: '',
+    status: 'NEW',
+    adminNotes: []
+  },
+  {
+    name: 'Trần Thị B',
+    phone: '0987654321',
+    email: 'user2@congthuthuat.vn',
+    deviceType: 'PC',
+    os: 'Windows 11',
+    urgency: 'medium',
+    location: 'TP.HCM',
+    preferredTime: 'Chiều',
+    description: 'Không vào được mạng LAN.',
+    attachmentUrl: '',
+    status: 'ACCEPTED',
+    adminNotes: [{ note: 'Đã liên hệ khách, hướng dẫn reset card mạng.' }]
+  },
+  {
+    name: 'Nguyễn Văn A',
+    phone: '0912345678',
+    email: 'user1@congthuthuat.vn',
+    deviceType: 'Laptop',
+    os: 'Windows 10',
+    urgency: 'low',
+    location: 'Hà Nội',
+    preferredTime: 'Tối',
+    description: 'Cần cài lại Office.',
+    attachmentUrl: '',
+    status: 'IN_PROGRESS',
+    adminNotes: [{ note: 'Đang chuẩn bị file cài.' }]
+  },
+  {
+    name: 'Trần Thị B',
+    phone: '0987654321',
+    email: 'user2@congthuthuat.vn',
+    deviceType: 'PC',
+    os: 'Windows 11',
+    urgency: 'high',
+    location: 'TP.HCM',
+    preferredTime: 'Sáng',
+    description: 'Máy không nhận USB.',
+    attachmentUrl: '',
+    status: 'DONE',
+    adminNotes: [{ note: 'Đã xử lý xong, khách hài lòng.' }]
+  },
+  {
+    name: 'Nguyễn Văn A',
+    phone: '0912345678',
+    email: 'user1@congthuthuat.vn',
+    deviceType: 'Laptop',
+    os: 'Windows 10',
+    urgency: 'medium',
+    location: 'Hà Nội',
+    preferredTime: 'Chiều',
+    description: 'Cần kiểm tra pin laptop.',
+    attachmentUrl: '',
+    status: 'REJECTED',
+    adminNotes: [{ note: 'Khách tự xử lý được.' }]
+  },
+  {
+    name: 'Trần Thị B',
+    phone: '0987654321',
+    email: 'user2@congthuthuat.vn',
+    deviceType: 'PC',
+    os: 'Windows 11',
+    urgency: 'low',
+    location: 'TP.HCM',
+    preferredTime: 'Tối',
+    description: 'Cần tối ưu SSD.',
+    attachmentUrl: '',
+    status: 'NEW',
+    adminNotes: []
+  },
+  {
+    name: 'Nguyễn Văn A',
+    phone: '0912345678',
+    email: 'user1@congthuthuat.vn',
+    deviceType: 'Laptop',
+    os: 'Windows 10',
+    urgency: 'medium',
+    location: 'Hà Nội',
+    preferredTime: 'Sáng',
+    description: 'Cần backup dữ liệu.',
+    attachmentUrl: '',
+    status: 'ACCEPTED',
+    adminNotes: []
+  },
+  {
+    name: 'Trần Thị B',
+    phone: '0987654321',
+    email: 'user2@congthuthuat.vn',
+    deviceType: 'PC',
+    os: 'Windows 11',
+    urgency: 'high',
+    location: 'TP.HCM',
+    preferredTime: 'Chiều',
+    description: 'Cần kiểm tra driver.',
+    attachmentUrl: '',
+    status: 'IN_PROGRESS',
+    adminNotes: []
+  }
+];
+
+async function seed() {
+  await mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+  await User.deleteMany();
+  await Category.deleteMany();
+  await Tag.deleteMany();
+  await Tip.deleteMany();
+  await Ticket.deleteMany();
+
+  // Users
+  for (const u of users) {
+    u.passwordHash = await bcrypt.hash(u.password, 10);
+    delete u.password;
+    await User.create(u);
+  }
+  // Categories
+  const catDocs = await Category.insertMany(categories);
+  // Tags
+  const tagDocs = await Tag.insertMany(tags);
+
+  // Tips
+  for (const t of tips) {
+    const cat = catDocs.find(c => c.name === t.category);
+    const tagArr = tagDocs.filter(tag => t.tags.includes(tag.name)).map(tag => tag._id);
+    await Tip.create({
+      title: t.title,
+      slug: slugifyVN(t.title),
+      excerpt: t.excerpt,
+      content: t.content,
+      thumbnail: t.thumbnail,
+      category: cat._id,
+      tags: tagArr,
+      status: 'published',
+      isFeatured: t.isFeatured,
+      views: Math.floor(Math.random() * 200 + 10)
+    });
+  }
+
+  // Tickets
+  const userDocs = await User.find();
+  for (let i = 0; i < tickets.length; i++) {
+    const t = tickets[i];
+    const user = userDocs.find(u => u.email === t.email);
+    await Ticket.create({
+      ...t,
+      user: user._id
+    });
+  }
+
+  console.log('Seed thành công!');
+  process.exit();
+}
+
+seed();
