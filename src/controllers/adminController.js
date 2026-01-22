@@ -3,6 +3,7 @@ const Tip = require('../models/Tip');
 const Category = require('../models/Category');
 const Tag = require('../models/Tag');
 const Ticket = require('../models/Ticket');
+const Contact = require('../models/Contact');
 const slugifyVN = require('../utils/slugify');
 const { getMeta } = require('../utils/meta');
 
@@ -118,7 +119,7 @@ exports.tickets = async (req, res) => {
   if (status) filter.status = status;
   if (q) filter.$or = [{ name: { $regex: q, $options: 'i' } }, { phone: { $regex: q } }];
   const tickets = await Ticket.find(filter).sort({ createdAt: -1 });
-  res.render('admin/tickets', { tickets });
+  res.render('admin/tickets', { tickets, query: q || '', selectedStatus: status || '' });
 };
 
 exports.ticketDetail = async (req, res) => {
@@ -133,4 +134,10 @@ exports.ticketUpdate = async (req, res) => {
   if (note) ticket.adminNotes.push({ note });
   await ticket.save();
   res.redirect('/admin/tickets/' + req.params.id);
+};
+
+// Contact messages
+exports.contacts = async (req, res) => {
+  const contacts = await Contact.find().sort({ createdAt: -1 }).limit(100);
+  res.render('admin/contacts', { contacts, meta: getMeta({ title: 'Liên hệ' }) });
 };

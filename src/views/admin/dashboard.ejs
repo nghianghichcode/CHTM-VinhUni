@@ -1,0 +1,26 @@
+<section>
+  <h2>Dashboard</h2>
+  <div class="card" style="margin-bottom:1em;">
+    <div class="flex" style="flex-wrap:wrap;">
+      <div class="card" style="min-width:200px;">Tổng tips: <b><%= stats.tips %></b></div>
+      <div class="card" style="min-width:200px;">Tổng tickets: <b><%= stats.tickets %></b></div>
+      <div class="card" style="min-width:200px;">NEW: <b><%= stats.ticketsByStatus.NEW %></b></div>
+      <div class="card" style="min-width:200px;">ACCEPTED: <b><%= stats.ticketsByStatus.ACCEPTED %></b></div>
+      <div class="card" style="min-width:200px;">IN_PROGRESS: <b><%= stats.ticketsByStatus.IN_PROGRESS %></b></div>
+      <div class="card" style="min-width:200px;">DONE: <b><%= stats.ticketsByStatus.DONE %></b></div>
+      <div class="card" style="min-width:200px;">REJECTED: <b><%= stats.ticketsByStatus.REJECTED %></b></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Top tips</h3>
+    <table class="table">
+      <thead><tr><th>Tiêu đề</th><th>Views</th></tr></thead>
+      <tbody>
+        <% stats.topTips.forEach(t => { %>
+          <tr><td><%= t.title %></td><td><%= t.views %></td></tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</section>

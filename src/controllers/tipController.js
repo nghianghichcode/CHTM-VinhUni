@@ -15,7 +15,14 @@ exports.list = async (req, res) => {
   const categories = await Category.find();
   const tags = await Tag.find();
   res.render('tips/list', {
-    tips, categories, tags, meta: getMeta({ title: 'Thư viện thủ thuật' })
+    tips,
+    categories,
+    tags,
+    query: q || '',
+    selectedCategory: category || '',
+    selectedTag: tag || '',
+    selectedSort: sort || '',
+    meta: getMeta({ title: 'Thư viện thủ thuật' })
   });
 };
 

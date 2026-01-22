@@ -1,0 +1,21 @@
+<section>
+  <h2>Liên hệ</h2>
+  <div class="card">
+    <table class="table">
+      <thead><tr><th>Họ tên</th><th>Email</th><th>Nội dung</th><th>Thời gian</th></tr></thead>
+      <tbody>
+        <% if (!contacts.length) { %>
+          <tr><td colspan="4">Chưa có liên hệ.</td></tr>
+        <% } %>
+        <% contacts.forEach(c => { %>
+          <tr>
+            <td><%= c.name %></td>
+            <td><%= c.email %></td>
+            <td><%= c.message %></td>
+            <td><%= new Date(c.createdAt).toLocaleString('vi-VN') %></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</section>

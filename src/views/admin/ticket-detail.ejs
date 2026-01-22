@@ -1,0 +1,31 @@
+<section>
+  <h2>Chi tiết phiếu</h2>
+  <div class="card" style="margin-bottom:1em;">
+    <p><b>Khách:</b> <%= ticket.name %> - <%= ticket.phone %></p>
+    <p><b>Email:</b> <%= ticket.email %></p>
+    <p><b>Thiết bị:</b> <%= ticket.deviceType %> - <%= ticket.os %></p>
+    <p><b>Mô tả:</b> <%= ticket.description %></p>
+    <p><b>Trạng thái:</b> <%= ticket.status %></p>
+  </div>
+  <div class="card">
+    <form method="post" action="/admin/tickets/<%= ticket._id %>/update">
+      <select name="status">
+        <option value="">Cập nhật trạng thái</option>
+        <option value="NEW">NEW</option>
+        <option value="ACCEPTED">ACCEPTED</option>
+        <option value="IN_PROGRESS">IN_PROGRESS</option>
+        <option value="DONE">DONE</option>
+        <option value="REJECTED">REJECTED</option>
+      </select>
+      <textarea name="note" placeholder="Thêm ghi chú"></textarea>
+      <button type="submit" class="btn">Cập nhật</button>
+    </form>
+    <hr>
+    <h3>Ghi chú</h3>
+    <ul>
+      <% ticket.adminNotes.forEach(n => { %>
+        <li><%= n.note %> - <%= new Date(n.createdAt).toLocaleString('vi-VN') %></li>
+      <% }) %>
+    </ul>
+  </div>
+</section>

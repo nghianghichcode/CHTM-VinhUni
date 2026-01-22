@@ -1,0 +1,31 @@
+<section>
+  <h2>Danh mục</h2>
+  <form method="post" action="/admin/categories/save" class="card" style="margin-bottom:1em;">
+    <input type="text" name="name" placeholder="Tên danh mục" required>
+    <button type="submit" class="btn">Thêm</button>
+  </form>
+  <div class="card">
+    <table class="table">
+      <thead><tr><th>Tên</th><th>Slug</th><th></th></tr></thead>
+      <tbody>
+        <% categories.forEach(c => { %>
+          <tr>
+            <td>
+              <form method="post" action="/admin/categories/save">
+                <input type="hidden" name="id" value="<%= c._id %>">
+                <input type="text" name="name" value="<%= c.name %>" required>
+                <button type="submit">Cập nhật</button>
+              </form>
+            </td>
+            <td><%= c.slug %></td>
+            <td>
+              <form method="post" action="/admin/categories/<%= c._id %>/delete">
+                <button type="submit">Xóa</button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</section>

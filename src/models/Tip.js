@@ -20,4 +20,8 @@ tipSchema.pre('save', function(next) {
   next();
 });
 
+tipSchema.index({ status: 1, createdAt: -1 });
+tipSchema.index({ category: 1, status: 1 });
+tipSchema.index({ tags: 1, status: 1 });
+
 module.exports = mongoose.model('Tip', tipSchema);

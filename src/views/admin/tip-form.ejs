@@ -1,0 +1,31 @@
+<section>
+  <h2><%= tip ? 'Cập nhật Tip' : 'Thêm Tip' %></h2>
+  <form method="post" action="/admin/tips/save" class="card">
+    <% if (tip) { %>
+      <input type="hidden" name="id" value="<%= tip._id %>">
+    <% } %>
+    <input type="text" name="title" placeholder="Tiêu đề" value="<%= tip?.title || '' %>" required>
+    <input type="text" name="excerpt" placeholder="Tóm tắt" value="<%= tip?.excerpt || '' %>" required>
+    <input type="text" name="thumbnail" placeholder="Link ảnh" value="<%= tip?.thumbnail || '' %>">
+    <select name="category" required>
+      <option value="">Chọn danh mục</option>
+      <% categories.forEach(cat => { %>
+        <option value="<%= cat._id %>" <%= tip && tip.category?.toString() === cat._id.toString() ? 'selected' : '' %>><%= cat.name %></option>
+      <% }) %>
+    </select>
+    <select name="tags" multiple>
+      <% tags.forEach(tag => { %>
+        <option value="<%= tag._id %>" <%= tip && tip.tags?.map(t => t.toString()).includes(tag._id.toString()) ? 'selected' : '' %>><%= tag.name %></option>
+      <% }) %>
+    </select>
+    <select name="status">
+      <option value="draft" <%= tip?.status === 'draft' ? 'selected' : '' %>>Draft</option>
+      <option value="published" <%= tip?.status === 'published' ? 'selected' : '' %>>Published</option>
+    </select>
+    <label style="display:flex; gap:0.5em; align-items:center;">
+      <input type="checkbox" name="isFeatured" <%= tip?.isFeatured ? 'checked' : '' %>> Nổi bật
+    </label>
+    <textarea name="content" placeholder="Nội dung" rows="8" required><%= tip?.content || '' %></textarea>
+    <button type="submit" class="btn">Lưu</button>
+  </form>
+</section>
