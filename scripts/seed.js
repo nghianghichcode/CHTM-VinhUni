@@ -245,6 +245,78 @@ const tips = [
     category: 'Windows',
     tags: ['Update', 'Cài đặt'],
     isFeatured: false
+  },
+  {
+    title: 'Mẹo giảm nóng CPU khi chơi game',
+    excerpt: 'Tối ưu quạt và vệ sinh giúp CPU mát hơn khi tải nặng.',
+    content: '<h2>Vệ sinh tản nhiệt</h2><p>Tháo bụi, thay keo tản nhiệt định kỳ.</p>',
+    thumbnail: '/images/og-default.png',
+    category: 'Tăng tốc',
+    tags: ['Tối ưu'],
+    isFeatured: false
+  },
+  {
+    title: 'Sửa lỗi không vào được WiFi sau khi cập nhật',
+    excerpt: 'Khắc phục lỗi WiFi mất kết nối sau Windows Update.',
+    content: '<h2>Quên mạng & kết nối lại</h2><p>Settings &gt; Network &gt; WiFi &gt; Manage known networks.</p>',
+    thumbnail: '/images/og-default.png',
+    category: 'Mạng',
+    tags: ['WiFi', 'Sửa lỗi'],
+    isFeatured: false
+  },
+  {
+    title: 'Tối ưu bộ nhớ ảo cho Windows',
+    excerpt: 'Cấu hình Virtual Memory giúp máy mượt hơn khi thiếu RAM.',
+    content: '<h2>System Properties</h2><p>Advanced &gt; Performance &gt; Virtual Memory.</p>',
+    thumbnail: '/images/og-default.png',
+    category: 'Windows',
+    tags: ['Tối ưu'],
+    isFeatured: false
+  },
+  {
+    title: 'Cách đổi DNS để vào mạng ổn định',
+    excerpt: 'Đổi DNS giúp truy cập nhanh và ổn định hơn.',
+    content: '<h2>Đổi DNS</h2><p>IPv4: 8.8.8.8 / 8.8.4.4 hoặc 1.1.1.1.</p>',
+    thumbnail: '/images/og-default.png',
+    category: 'Mạng',
+    tags: ['Mạng', 'Tối ưu'],
+    isFeatured: false
+  },
+  {
+    title: 'Khắc phục lỗi Word bị treo khi mở file',
+    excerpt: 'Tắt add-in và chạy Word ở Safe Mode.',
+    content: '<h2>Safe Mode</h2><p>Win+R &gt; winword /safe.</p>',
+    thumbnail: '/images/og-default.png',
+    category: 'Office',
+    tags: ['Sửa lỗi', 'Phần mềm'],
+    isFeatured: false
+  },
+  {
+    title: 'Cách kiểm tra ổ đĩa bad sector',
+    excerpt: 'Dùng lệnh chkdsk để kiểm tra và sửa lỗi ổ đĩa.',
+    content: '<h2>chkdsk</h2><p>Mở CMD (Admin), chạy: chkdsk /f /r.</p>',
+    thumbnail: '/images/og-default.png',
+    category: 'Windows',
+    tags: ['Sửa lỗi'],
+    isFeatured: false
+  },
+  {
+    title: 'Bật xác thực 2 lớp cho tài khoản',
+    excerpt: 'Tăng bảo mật bằng xác thực hai lớp (2FA).',
+    content: '<h2>2FA</h2><p>Bật 2FA trên email và các dịch vụ quan trọng.</p>',
+    thumbnail: '/images/og-default.png',
+    category: 'Bảo mật',
+    tags: ['Bảo vệ'],
+    isFeatured: false
+  },
+  {
+    title: 'Sửa lỗi bàn phím laptop không gõ được',
+    excerpt: 'Kiểm tra driver và layout bàn phím.',
+    content: '<h2>Device Manager</h2><p>Uninstall keyboard driver và restart.</p>',
+    thumbnail: '/images/og-default.png',
+    category: 'Driver',
+    tags: ['Sửa lỗi', 'Driver'],
+    isFeatured: false
   }
 ];
 

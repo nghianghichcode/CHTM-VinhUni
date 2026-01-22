@@ -3,6 +3,11 @@ const router = express.Router();
 const adminController = require('../controllers/adminController');
 const { ensureAdmin, ensureGuest } = require('../middlewares/auth');
 
+router.use((req, res, next) => {
+	res.locals.layout = 'layouts/admin';
+	next();
+});
+
 router.get('/login', ensureGuest, adminController.loginForm);
 router.post('/login', ensureGuest, adminController.login);
 
@@ -31,5 +36,8 @@ router.post('/tags/:id/delete', adminController.tagDelete);
 router.get('/tickets', adminController.tickets);
 router.get('/tickets/:id', adminController.ticketDetail);
 router.post('/tickets/:id/update', adminController.ticketUpdate);
+
+// Contacts
+router.get('/contacts', adminController.contacts);
 
 module.exports = router;

@@ -26,4 +26,7 @@ ticketSchema.pre('save', function(next) {
   next();
 });
 
+ticketSchema.index({ user: 1, createdAt: -1 });
+ticketSchema.index({ status: 1, createdAt: -1 });
+
 module.exports = mongoose.model('Ticket', ticketSchema);

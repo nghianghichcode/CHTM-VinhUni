@@ -1,0 +1,26 @@
+<section class="container">
+  <div class="section-head">
+    <h2>Tài khoản</h2>
+    <p>Xin chào, <b><%= user?.name %></b></p>
+  </div>
+  <div class="card">
+    <h3>Phiếu cứu hộ của tôi</h3>
+    <table class="table">
+      <thead><tr><th>Mã</th><th>Trạng thái</th><th>Thiết bị</th><th>Thời gian</th><th></th></tr></thead>
+      <tbody>
+        <% if (!tickets.length) { %>
+          <tr><td colspan="5">Chưa có phiếu nào.</td></tr>
+        <% } %>
+        <% tickets.forEach(t => { %>
+          <tr>
+            <td><%= t._id.toString().slice(-6) %></td>
+            <td><%= t.status %></td>
+            <td><%= t.deviceType %> - <%= t.os %></td>
+            <td><%= new Date(t.createdAt).toLocaleString('vi-VN') %></td>
+            <td><a href="/rescue/<%= t._id %>">Chi tiết</a></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</section>

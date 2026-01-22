@@ -1,0 +1,35 @@
+<section>
+  <div class="flex-between" style="margin-bottom:1em;">
+    <h2>Quản lý Tips</h2>
+    <a href="/admin/tips/new" class="btn">Thêm tip</a>
+  </div>
+  <div class="card">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Tiêu đề</th>
+          <th>Danh mục</th>
+          <th>Trạng thái</th>
+          <th>Views</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% tips.forEach(t => { %>
+          <tr>
+            <td><%= t.title %></td>
+            <td><%= t.category?.name %></td>
+            <td><%= t.status %></td>
+            <td><%= t.views %></td>
+            <td>
+              <a href="/admin/tips/<%= t._id %>/edit">Sửa</a>
+              <form method="post" action="/admin/tips/<%= t._id %>/delete" style="display:inline;">
+                <button type="submit">Xóa</button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</section>

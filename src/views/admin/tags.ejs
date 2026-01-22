@@ -1,0 +1,31 @@
+<section>
+  <h2>Tags</h2>
+  <form method="post" action="/admin/tags/save" class="card" style="margin-bottom:1em;">
+    <input type="text" name="name" placeholder="Tên tag" required>
+    <button type="submit" class="btn">Thêm</button>
+  </form>
+  <div class="card">
+    <table class="table">
+      <thead><tr><th>Tên</th><th>Slug</th><th></th></tr></thead>
+      <tbody>
+        <% tags.forEach(t => { %>
+          <tr>
+            <td>
+              <form method="post" action="/admin/tags/save">
+                <input type="hidden" name="id" value="<%= t._id %>">
+                <input type="text" name="name" value="<%= t.name %>" required>
+                <button type="submit">Cập nhật</button>
+              </form>
+            </td>
+            <td><%= t.slug %></td>
+            <td>
+              <form method="post" action="/admin/tags/<%= t._id %>/delete">
+                <button type="submit">Xóa</button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</section>

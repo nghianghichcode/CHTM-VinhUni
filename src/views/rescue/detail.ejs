@@ -1,0 +1,29 @@
+<section class="container" style="max-width:820px;">
+  <div class="section-head">
+    <h2>Chi tiết phiếu cứu hộ</h2>
+  </div>
+  <div class="card">
+    <p><b>Trạng thái:</b> <%= ticket.status %></p>
+    <p><b>Họ tên:</b> <%= ticket.name %></p>
+    <p><b>Điện thoại:</b> <%= ticket.phone %></p>
+    <p><b>Email:</b> <%= ticket.email %></p>
+    <p><b>Thiết bị:</b> <%= ticket.deviceType %> - <%= ticket.os %></p>
+    <p><b>Mức độ:</b> <%= ticket.urgency %></p>
+    <p><b>Khu vực:</b> <%= ticket.location || '-' %></p>
+    <p><b>Thời gian mong muốn:</b> <%= ticket.preferredTime || '-' %></p>
+    <p><b>Mô tả:</b> <%= ticket.description %></p>
+    <% if (ticket.attachmentUrl) { %>
+      <p><b>Đính kèm:</b> <a href="<%= ticket.attachmentUrl %>" target="_blank">Xem</a></p>
+    <% } %>
+    <hr>
+    <h3>Ghi chú từ kỹ thuật</h3>
+    <ul>
+      <% if (!ticket.adminNotes.length) { %>
+        <li>Chưa có ghi chú.</li>
+      <% } %>
+      <% ticket.adminNotes.forEach(n => { %>
+        <li><%= n.note %> - <%= new Date(n.createdAt).toLocaleString('vi-VN') %></li>
+      <% }) %>
+    </ul>
+  </div>
+</section>

@@ -1,0 +1,62 @@
+body,
+.site-header,
+.site-footer,
+.card,
+.accordion,
+.sidebar,
+.info-card,
+.stat-card,
+.highlight-card,
+.intro-panel {
+  background: #0b1120 !important;
+  color: #e2e8f0 !important;
+}
+body {
+  background: #0b1120 !important;
+  background-image:
+    linear-gradient(rgba(148,163,184,0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(148,163,184,0.08) 1px, transparent 1px) !important;
+  background-size: 32px 32px !important;
+}
+main { background: transparent !important; }
+a,
+.tags a { color: #93c5fd !important; }
+.main-nav a { color: #e2e8f0 !important; }
+.site-header { background: rgba(11,17,32,0.95) !important; }
+.site-header .btn { background: #1d4ed8 !important; box-shadow: none !important; }
+.site-header button { background: #0b1120 !important; color: #e2e8f0 !important; border-color: #1f2937 !important; }
+.card,
+.accordion,
+.sidebar,
+.info-card,
+.stat-card,
+.highlight-card {
+  box-shadow: 0 10px 30px rgba(0,0,0,0.35) !important;
+  border-color: #1f2937 !important;
+}
+.site-header { border-bottom: 1px solid #1f2937 !important; }
+.site-footer { background: #0a0f1a !important; }
+.intro-dark { background: #0b1120 !important; }
+.intro-dark::before {
+  opacity: 0.5 !important;
+  background-image:
+    linear-gradient(rgba(148,163,184,0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(148,163,184,0.08) 1px, transparent 1px) !important;
+  background-size: 32px 32px !important;
+}
+.section-head h2 { color: #e2e8f0 !important; }
+.section-head p { color: #94a3b8 !important; }
+.section-line { filter: brightness(1.2); }
+.btn { background: #1d4ed8 !important; box-shadow: none !important; }
+.btn-secondary { background: #0f172a !important; color: #e2e8f0 !important; border: 1px solid #1f2937 !important; }
+.moment-card, .highlight-card, .card, .info-card, .stat-card { border-color: #1f2937 !important; }
+.hero { color: #fff !important; }
+.hero-badge { background: rgba(148,163,184,0.15) !important; border-color: rgba(148,163,184,0.35) !important; }
+.moment-card span { background: rgba(2,6,23,0.75) !important; }
+input, textarea, select {
+  background: #111827 !important;
+  color: #e2e8f0 !important;
+  border: 1px solid #334155 !important;
+}
+.alert.success { background: #134e4a !important; color: #a7f3d0 !important; }
+.alert.error { background: #7f1d1d !important; color: #fee2e2 !important; }

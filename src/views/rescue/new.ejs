@@ -1,0 +1,27 @@
+<section class="container" style="max-width:720px;">
+  <div class="section-head">
+    <h2>Tạo phiếu cứu hộ</h2>
+    <p>Điền đầy đủ thông tin để kỹ thuật viên hỗ trợ nhanh.</p>
+  </div>
+  <form method="post" action="/rescue/new" class="card">
+    <input type="text" name="name" placeholder="Họ tên" required>
+    <input type="tel" name="phone" placeholder="Số điện thoại" required>
+    <input type="email" name="email" placeholder="Email" required>
+    <select name="deviceType" required>
+      <option value="">Loại thiết bị</option>
+      <option value="PC">PC</option>
+      <option value="Laptop">Laptop</option>
+    </select>
+    <input type="text" name="os" placeholder="Hệ điều hành" required>
+    <select name="urgency">
+      <option value="low">Mức độ: Thấp</option>
+      <option value="medium">Mức độ: Trung bình</option>
+      <option value="high">Mức độ: Cao</option>
+    </select>
+    <input type="text" name="location" placeholder="Khu vực" />
+    <input type="text" name="preferredTime" placeholder="Thời gian mong muốn" />
+    <textarea name="description" placeholder="Mô tả lỗi" required></textarea>
+    <input type="text" name="attachmentUrl" placeholder="Link ảnh/đính kèm (nếu có)" />
+    <button type="submit" class="btn btn-primary">Gửi phiếu</button>
+  </form>
+</section>

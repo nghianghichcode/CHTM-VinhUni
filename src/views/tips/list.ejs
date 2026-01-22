@@ -1,0 +1,42 @@
+<section class="container">
+  <div class="section-head">
+    <h2>Thư viện thủ thuật</h2>
+    <p>Lọc và tìm kiếm theo nhu cầu.</p>
+  </div>
+  <form method="get" action="/tips" class="card" style="margin-bottom:1.2em;">
+    <div class="flex" style="flex-wrap:wrap;">
+      <input type="text" name="q" placeholder="Tìm kiếm" value="<%= query || '' %>">
+      <select name="category">
+        <option value="">Danh mục</option>
+        <% categories.forEach(cat => { %>
+          <option value="<%= cat._id %>" <%= selectedCategory?.toString() === cat._id.toString() ? 'selected' : '' %>><%= cat.name %></option>
+        <% }) %>
+      </select>
+      <select name="tag">
+        <option value="">Tag</option>
+        <% tags.forEach(tag => { %>
+          <option value="<%= tag._id %>" <%= selectedTag?.toString() === tag._id.toString() ? 'selected' : '' %>><%= tag.name %></option>
+        <% }) %>
+      </select>
+      <select name="sort">
+        <option value="" <%= selectedSort === '' ? 'selected' : '' %>>Mới nhất</option>
+        <option value="views" <%= selectedSort === 'views' ? 'selected' : '' %>>Nhiều lượt xem</option>
+      </select>
+      <button type="submit" class="btn btn-primary">Lọc</button>
+    </div>
+  </form>
+  <div class="card-list">
+    <% if (!tips.length) { %>
+      <div class="card">Chưa có bài viết.</div>
+    <% } %>
+    <% tips.forEach(tip => { %>
+      <div class="card">
+        <a href="/tips/<%= tip.slug %>">
+          <img src="<%= (!tip.thumbnail || tip.thumbnail === '/images/og-default.png') ? '/images/banner.jpg' : tip.thumbnail %>" alt="<%= tip.title %>">
+          <h3><%= tip.title %></h3>
+          <p><%= tip.excerpt %></p>
+        </a>
+      </div>
+    <% }) %>
+  </div>
+</section>

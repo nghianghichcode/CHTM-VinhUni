@@ -1,0 +1,33 @@
+<section>
+  <h2>Phiếu cứu hộ</h2>
+  <form method="get" action="/admin/tickets" class="card" style="margin-bottom:1em;">
+    <div class="flex" style="flex-wrap:wrap;">
+      <input type="text" name="q" placeholder="Tìm theo tên/điện thoại" value="<%= query || '' %>">
+      <select name="status">
+        <option value="">Trạng thái</option>
+        <option value="NEW" <%= selectedStatus === 'NEW' ? 'selected' : '' %>>NEW</option>
+        <option value="ACCEPTED" <%= selectedStatus === 'ACCEPTED' ? 'selected' : '' %>>ACCEPTED</option>
+        <option value="IN_PROGRESS" <%= selectedStatus === 'IN_PROGRESS' ? 'selected' : '' %>>IN_PROGRESS</option>
+        <option value="DONE" <%= selectedStatus === 'DONE' ? 'selected' : '' %>>DONE</option>
+        <option value="REJECTED" <%= selectedStatus === 'REJECTED' ? 'selected' : '' %>>REJECTED</option>
+      </select>
+      <button type="submit" class="btn">Lọc</button>
+    </div>
+  </form>
+  <div class="card">
+    <table class="table">
+      <thead><tr><th>Khách</th><th>Thiết bị</th><th>Trạng thái</th><th>Thời gian</th><th></th></tr></thead>
+      <tbody>
+        <% tickets.forEach(t => { %>
+          <tr>
+            <td><%= t.name %> - <%= t.phone %></td>
+            <td><%= t.deviceType %> - <%= t.os %></td>
+            <td><%= t.status %></td>
+            <td><%= new Date(t.createdAt).toLocaleString('vi-VN') %></td>
+            <td><a href="/admin/tickets/<%= t._id %>">Chi tiết</a></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</section>

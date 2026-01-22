@@ -8,6 +8,7 @@ const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
 const path = require('path');
 const flash = require('connect-flash');
+const expressLayouts = require('express-ejs-layouts');
 
 const { sanitizeBody } = require('./utils/sanitize');
 const { notFound, errorHandler } = require('./middlewares/error');
@@ -24,8 +25,8 @@ app.use(helmet());
 // Logger
 app.use(morgan('dev'));
 
-// Static
-app.use(express.static(path.join(__dirname, 'public')));
+// Static (phục vụ public ngoài src)
+app.use(express.static(path.join(__dirname, '../public')));
 
 // Body parser
 app.use(express.urlencoded({ extended: false }));
@@ -34,6 +35,8 @@ app.use(express.json());
 // EJS
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
+app.use(expressLayouts);
+app.set('layout', 'layouts/layout');
 
 // Session
 app.use(session({

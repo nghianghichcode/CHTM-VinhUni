@@ -1,0 +1,26 @@
+<section class="container" style="max-width:900px;">
+  <div class="section-head">
+    <h2><%= tip.title %></h2>
+    <p><%= tip.excerpt %></p>
+  </div>
+  <div class="card">
+    <img src="<%= (!tip.thumbnail || tip.thumbnail === '/images/og-default.png') ? '/images/banner.jpg' : tip.thumbnail %>" alt="<%= tip.title %>" style="width:100%; border-radius: var(--radius);">
+    <div style="margin-top:1em;">
+      <%- tip.content %>
+    </div>
+    <p style="margin-top:1em; color: var(--muted);">Danh mục: <%= tip.category?.name || '' %> | Tags: <%= (tip.tags && tip.tags.length) ? tip.tags.map(t => t.name).join(', ') : '' %></p>
+  </div>
+  <section style="margin-top:2em;">
+    <h3>Bài liên quan</h3>
+    <div class="card-list">
+      <% related.forEach(r => { %>
+        <div class="card">
+          <a href="/tips/<%= r.slug %>">
+            <img src="<%= (!r.thumbnail || r.thumbnail === '/images/og-default.png') ? '/images/banner.jpg' : r.thumbnail %>" alt="<%= r.title %>">
+            <h4><%= r.title %></h4>
+          </a>
+        </div>
+      <% }) %>
+    </div>
+  </section>
+</section>
