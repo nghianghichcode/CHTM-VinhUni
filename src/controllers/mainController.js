@@ -23,7 +23,7 @@ exports.home = async (req, res) => {
     topTips,
     tags,
     stats,
-    meta: getMeta({ title: 'Thủ Thuật & Cứu Hộ Máy Tính' })
+    meta: getMeta({ title: 'Cứu hộ máy tính VinhUni' })
   });
 };
 

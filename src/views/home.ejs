@@ -2,8 +2,8 @@
   <div class="container hero-inner">
     <div class="hero-content">
       <span class="hero-badge">ĐỘI CỨU HỘ MÁY TÍNH VINHUNI</span>
-      <h1>Thủ Thuật<br><span class="accent">Cứu Hộ</span> Máy Tính</h1>
-      <p>Cổng thông tin chia sẻ thủ thuật, cứu hộ, hỗ trợ Windows, Office, mạng, bảo mật, tăng tốc, sửa lỗi.</p>
+      <h1 data-typewriter="hero-title" data-text="Thủ Thuật\n[accent:Cứu Hộ] Máy Tính">Thủ Thuật<br><span class="accent">Cứu Hộ</span> Máy Tính</h1>
+      <p data-typewriter="hero-desc" data-text="Cổng thông tin chia sẻ thủ thuật, cứu hộ, hỗ trợ Windows, Office, mạng, bảo mật, tăng tốc, sửa lỗi.">Cổng thông tin chia sẻ thủ thuật, cứu hộ, hỗ trợ Windows, Office, mạng, bảo mật, tăng tốc, sửa lỗi.</p>
       <div class="cta-group">
         <a href="/tips" class="btn btn-primary">Khám phá ngay</a>
         <a href="/rescue" class="btn btn-secondary">Hướng dẫn</a>
@@ -38,19 +38,35 @@
     <h2>Khoảnh khắc đáng nhớ</h2>
     <p>Những hoạt động nổi bật và các buổi hỗ trợ thực tế của đội cứu hộ.</p>
   </div>
-  <div class="moments-grid">
-    <div class="moment-card">
-      <img src="/images/banner.jpg" alt="Hoạt động 1">
-      <span>Hỗ trợ phòng máy</span>
+  <div class="moments-slider" data-slider="moments">
+    <button class="slider-btn prev" type="button" aria-label="Trước">‹</button>
+    <div class="moments-track">
+      <div class="moment-card">
+        <img src="/images/chmt5.jpg" alt="Hoạt động 1">
+        <span>Hỗ trợ lắp đặt máy tính</span>
+      </div>
+      <div class="moment-card">
+        <img src="/images/chmt1.jpg" alt="Hoạt động 2">
+        <span>Khu vực làm việc của đội</span>
+      </div>
+      <div class="moment-card">
+        <img src="/images/chmt3.jpg" alt="Hoạt động 3">
+        <span>Đón tết cùng Đội CHMT</span>
+      </div>
+      <div class="moment-card">
+        <img src="/images/chmt6.jpg" alt="Hoạt động 4">
+        <span>Đào tạo thành viên</span>
+      </div>
+      <div class="moment-card">
+        <img src="/images/banner.jpg" alt="Hoạt động 5">
+        <span>Hỗ trợ cài đặt</span>
+      </div>
+      <div class="moment-card">
+        <img src="/images/banner.jpg" alt="Hoạt động 6">
+        <span>Kiểm tra & tối ưu</span>
+      </div>
     </div>
-    <div class="moment-card">
-      <img src="/images/banner.jpg" alt="Hoạt động 2">
-      <span>Chẩn đoán phần mềm</span>
-    </div>
-    <div class="moment-card">
-      <img src="/images/banner.jpg" alt="Hoạt động 3">
-      <span>Tối ưu hiệu năng</span>
-    </div>
+    <button class="slider-btn next" type="button" aria-label="Sau">›</button>
   </div>
 </section>
 <section class="achievements container">
@@ -91,10 +107,10 @@
       </div>
     </article>
     <article class="highlight-card">
-      <img src="/images/banner.jpg" alt="Ngày hội hỗ trợ cài đặt">
+      <img src="/images/chmt4.jpg" alt="Ngày hội hỗ trợ sinh viên">
       <div class="highlight-body">
-        <h3>Ngày hội cài đặt phần mềm</h3>
-        <p>Cài Office, driver, phần mềm học tập và cấu hình bảo mật.</p>
+        <h3>Ngày hội đón chào tân sinh viên</h3>
+        <p>Hỗ trợ sinh viên đăng ký nhập học, tạo không gian trò chơi cho tân sinh viên</p>
       </div>
     </article>
     <article class="highlight-card">
@@ -107,7 +123,7 @@
   </div>
 </section>
 <section class="featured-tips container">
-  <h2>Thủ thuật nổi bật</h2>
+  <h2>Thủ thuật máy tính</h2>
   <div class="card-list">
     <% featuredTips.forEach(tip => { %>
       <div class="card">
