@@ -1,7 +1,7 @@
 <header class="site-header">
   <div class="container flex-between">
     <a href="/" class="logo">
-      <img src="/images/logo.jpg" alt="Logo" height="40">
+      <img src="/images/logo_transparent.png" alt="Logo" height="40">
       <span>Cứu hộ máy tính VinhUni</span>
     </a>
     <nav class="main-nav">
@@ -9,6 +9,16 @@
       <a href="/rescue">Cứu hộ</a>
       <a href="/faq">FAQ</a>
       <a href="/contact">Liên hệ</a>
+      <div class="header-info" aria-live="polite">
+        <div class="header-time" id="header-time">--:--:--</div>
+        <div class="header-meta">
+          <span id="header-date">--</span>
+          <span class="header-weather">
+            <span id="header-weather-icon" aria-hidden="true">⛅</span>
+            <span id="header-temp">--°C</span>
+          </span>
+        </div>
+      </div>
       <% if (user) { %>
         <a href="/profile">Tài khoản</a>
         <a href="/auth/logout">Đăng xuất</a>
