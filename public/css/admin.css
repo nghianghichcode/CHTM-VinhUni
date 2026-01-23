@@ -89,3 +89,29 @@ input:focus, select:focus, textarea:focus {
   box-shadow: 0 0 0 3px rgba(37,99,235,0.2);
   outline: none;
 }
+.admin-field { margin-bottom: 0.6em; }
+.admin-field label { display: block; font-weight: 600; margin-bottom: 0.3em; }
+.thumb-preview {
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  margin: 0.4em 0 0.6em;
+}
+.thumb-preview img {
+  width: 120px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
+.remove-thumb { display: inline-flex; align-items: center; gap: 0.4em; }
+.editor-wrapper {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 0.8em;
+  background: #fff;
+}
+.ql-toolbar.ql-snow { border: none; border-bottom: 1px solid var(--border); }
+.ql-container.ql-snow { border: none; min-height: 260px; }
