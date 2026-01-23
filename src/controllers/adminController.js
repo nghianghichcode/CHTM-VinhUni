@@ -53,14 +53,44 @@ exports.tipForm = async (req, res) => {
 };
 
 exports.tipSave = async (req, res) => {
-  const { id, title, excerpt, content, thumbnail, category, tags, status, isFeatured } = req.body;
+  const { id, title, excerpt, content, thumbnail, category, tags, status, isFeatured, removeThumbnail } = req.body;
   const slug = slugifyVN(title);
+  const tagsArray = Array.isArray(tags) ? tags : (tags ? [tags] : []);
+  let thumbnailPath = thumbnail;
+  if (removeThumbnail) thumbnailPath = '';
+  if (req.file) thumbnailPath = `/uploads/tips/${req.file.filename}`;
   if (id) {
-    await Tip.findByIdAndUpdate(id, { title, slug, excerpt, content, thumbnail, category, tags, status, isFeatured: !!isFeatured });
+    await Tip.findByIdAndUpdate(id, {
+      title,
+      slug,
+      excerpt,
+      content,
+      thumbnail: thumbnailPath,
+      category,
+      tags: tagsArray,
+      status,
+      isFeatured: !!isFeatured,
+      updatedAt: Date.now()
+    });
   } else {
-    await Tip.create({ title, slug, excerpt, content, thumbnail, category, tags, status, isFeatured: !!isFeatured });
+    await Tip.create({
+      title,
+      slug,
+      excerpt,
+      content,
+      thumbnail: thumbnailPath,
+      category,
+      tags: tagsArray,
+      status,
+      isFeatured: !!isFeatured
+    });
   }
   res.redirect('/admin/tips');
+};
+
+exports.tipImageUpload = async (req, res) => {
+  if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
+  res.json({ url: `/uploads/tips/${req.file.filename}` });
 };
 
 exports.tipDelete = async (req, res) => {
