@@ -2,7 +2,7 @@ const User = require('../models/User');
 const bcrypt = require('bcrypt');
 
 exports.loginForm = (req, res) => {
-  res.render('auth/login');
+  res.render('auth/login', { bodyClass: 'auth-page' });
 };
 
 exports.login = async (req, res) => {
@@ -17,7 +17,7 @@ exports.login = async (req, res) => {
 };
 
 exports.registerForm = (req, res) => {
-  res.render('auth/register');
+  res.render('auth/register', { bodyClass: 'auth-page' });
 };
 
 exports.register = async (req, res) => {

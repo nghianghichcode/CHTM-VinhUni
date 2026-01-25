@@ -23,7 +23,8 @@ exports.home = async (req, res) => {
     topTips,
     tags,
     stats,
-    meta: getMeta({ title: 'Cứu hộ máy tính VinhUni' })
+    meta: getMeta({ title: 'Cứu hộ máy tính VinhUni' }),
+    bodyClass: 'home tet-binh-ngo'
   });
 };
 

@@ -1,4 +1,12 @@
 <section class="hero">
+  <div class="floating-lanterns" aria-hidden="true">
+    <span style="--i:1"></span>
+    <span style="--i:2"></span>
+    <span style="--i:3"></span>
+    <span style="--i:4"></span>
+    <span style="--i:5"></span>
+  </div>
+  <div class="golden-rings" aria-hidden="true"></div>
   <div class="container hero-inner">
     <div class="hero-content">
       <span class="hero-badge">ĐỘI CỨU HỘ MÁY TÍNH VINHUNI</span>
@@ -12,6 +20,7 @@
     <div class="hero-decor" aria-hidden="true"></div>
   </div>
 </section>
+<canvas id="fireworks-canvas" aria-hidden="true"></canvas>
 <section class="intro intro-dark">
   <div class="container">
     <div class="section-head center">
@@ -40,30 +49,32 @@
   </div>
   <div class="moments-slider" data-slider="moments">
     <button class="slider-btn prev" type="button" aria-label="Trước">‹</button>
-    <div class="moments-track">
-      <div class="moment-card">
-        <img src="/images/chmt5.jpg" alt="Hoạt động 1">
-        <span>Hỗ trợ lắp đặt máy tính</span>
-      </div>
-      <div class="moment-card">
-        <img src="/images/chmt1.jpg" alt="Hoạt động 2">
-        <span>Khu vực làm việc của đội</span>
-      </div>
-      <div class="moment-card">
-        <img src="/images/chmt3.jpg" alt="Hoạt động 3">
-        <span>Đón tết cùng Đội CHMT</span>
-      </div>
-      <div class="moment-card">
-        <img src="/images/chmt6.jpg" alt="Hoạt động 4">
-        <span>Đào tạo thành viên</span>
-      </div>
-      <div class="moment-card">
-        <img src="/images/banner.jpg" alt="Hoạt động 5">
-        <span>Hỗ trợ cài đặt</span>
-      </div>
-      <div class="moment-card">
-        <img src="/images/banner.jpg" alt="Hoạt động 6">
-        <span>Kiểm tra & tối ưu</span>
+    <div class="moments-viewport">
+      <div class="moments-track">
+        <div class="moment-card">
+          <img src="/images/chmt5.jpg" alt="Hoạt động 1">
+          <span>Hỗ trợ lắp đặt máy tính</span>
+        </div>
+        <div class="moment-card">
+          <img src="/images/chmt1.jpg" alt="Hoạt động 2">
+          <span>Khu vực làm việc của đội</span>
+        </div>
+        <div class="moment-card">
+          <img src="/images/chmt3.jpg" alt="Hoạt động 3">
+          <span>Đón tết cùng Đội CHMT</span>
+        </div>
+        <div class="moment-card">
+          <img src="/images/chmt6.jpg" alt="Hoạt động 4">
+          <span>Đào tạo thành viên</span>
+        </div>
+        <div class="moment-card">
+          <img src="/images/banner.jpg" alt="Hoạt động 5">
+          <span>Hỗ trợ cài đặt</span>
+        </div>
+        <div class="moment-card">
+          <img src="/images/banner.jpg" alt="Hoạt động 6">
+          <span>Kiểm tra & tối ưu</span>
+        </div>
       </div>
     </div>
     <button class="slider-btn next" type="button" aria-label="Sau">›</button>

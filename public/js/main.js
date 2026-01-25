@@ -1,5 +1,6 @@
 // Accordion FAQ + reveal animations
 document.addEventListener('DOMContentLoaded', function() {
+  document.documentElement.classList.add('js-animate');
   const typewriterTargets = Array.from(document.querySelectorAll('[data-typewriter]'));
   const runTypewriter = (list, idx = 0) => {
     if (idx >= list.length) return;
@@ -133,6 +134,31 @@ document.addEventListener('DOMContentLoaded', function() {
     } else if (lazyTargets.length) {
       runTypewriter(lazyTargets);
     }
+  }
+
+  const sloganEl = document.getElementById('logo-slogan');
+  if (sloganEl) {
+    const primaryText = sloganEl.textContent.trim();
+    const altText = sloganEl.dataset.alt || 'Chúc mừng năm mới';
+    let showAlt = false;
+
+    // Start with primary, then quickly show yellow alt, then continue toggling
+    sloganEl.textContent = primaryText;
+    sloganEl.classList.remove('slogan-alt');
+
+    const swap = () => {
+      sloganEl.classList.add('slogan-fade');
+      setTimeout(() => {
+        sloganEl.textContent = showAlt ? primaryText : altText;
+        sloganEl.classList.toggle('slogan-alt', !showAlt);
+        showAlt = !showAlt;
+        sloganEl.classList.remove('slogan-fade');
+      }, 300);
+    };
+
+    // Show the yellow alt within ~1.2s, then every 5s
+    setTimeout(swap, 1200);
+    setInterval(swap, 5000);
   }
   const timeEl = document.getElementById('header-time');
   const dateEl = document.getElementById('header-date');
@@ -301,4 +327,201 @@ document.addEventListener('DOMContentLoaded', function() {
       startAuto();
     });
   });
+
+  // Mobile Menu Toggle
+  const menuToggle = document.querySelector('.mobile-menu-toggle');
+  const mainNav = document.querySelector('.main-nav');
+  const navOverlay = document.querySelector('.nav-overlay');
+  const drawerClose = document.querySelector('.drawer-close');
+  const docRoot = document.documentElement;
+  let scrollLockY = 0;
+
+  const isMobile = () => window.innerWidth <= 1024;
+
+  if (menuToggle && mainNav) {
+    const setMenuState = (open) => {
+      const shouldOpen = open && isMobile();
+      if (shouldOpen) {
+        scrollLockY = window.scrollY || window.pageYOffset;
+        document.body.style.position = 'fixed';
+        document.body.style.top = `-${scrollLockY}px`;
+        document.body.style.width = '100%';
+        document.body.style.overflow = 'hidden';
+        if (docRoot) docRoot.style.overflow = 'hidden';
+      } else {
+        document.body.style.position = '';
+        document.body.style.top = '';
+        document.body.style.width = '';
+        document.body.style.overflow = '';
+        if (docRoot) docRoot.style.overflow = '';
+        if (scrollLockY) window.scrollTo(0, scrollLockY);
+      }
+      mainNav.classList.toggle('active', shouldOpen);
+      menuToggle.setAttribute('aria-expanded', shouldOpen ? 'true' : 'false');
+      menuToggle.innerHTML = shouldOpen ? '✕' : '☰';
+      document.body.classList.toggle('menu-open', shouldOpen);
+      if (docRoot) docRoot.classList.toggle('menu-open', shouldOpen);
+      if (navOverlay) navOverlay.classList.toggle('show', shouldOpen);
+    };
+
+    menuToggle.addEventListener('click', () => {
+      const isActive = mainNav.classList.contains('active');
+      setMenuState(!isActive);
+    });
+
+    // Close menu when clicking outside or on overlay
+    document.addEventListener('click', (e) => {
+      const isOpen = mainNav.classList.contains('active');
+      if (!isOpen) return;
+      if (!mainNav.contains(e.target) && !menuToggle.contains(e.target)) {
+        setMenuState(false);
+      }
+    });
+
+    if (navOverlay) {
+      navOverlay.addEventListener('click', () => setMenuState(false));
+    }
+
+    if (drawerClose) {
+      drawerClose.addEventListener('click', () => setMenuState(false));
+    }
+
+    window.addEventListener('resize', () => {
+      if (!isMobile()) {
+        setMenuState(false);
+      }
+    });
+  }
+
+  const initFireworks = () => {
+    const canvas = document.getElementById('fireworks-canvas');
+    if (!canvas) return;
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    let width = 0;
+    let height = 0;
+    let particles = [];
+    let fireworks = [];
+
+    const resize = () => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    };
+
+    window.addEventListener('resize', resize);
+    resize();
+
+    const randomColor = () => {
+      // Broad palette (gold, red, teal, blue, magenta, lime, violet, white)
+      const palette = [
+        [45, 92, 62],   // gold
+        [10, 90, 60],   // red-orange
+        [205, 85, 62],  // blue
+        [310, 90, 66],  // magenta
+        [160, 80, 60],  // teal
+        [125, 82, 60],  // lime
+        [270, 86, 64],  // violet
+        [55, 94, 70],   // soft yellow
+      ];
+      const pick = palette[Math.floor(Math.random() * palette.length)];
+      // Small random jitter for natural variation
+      const hue = pick[0] + (Math.random() - 0.5) * 10;
+      const sat = Math.min(100, Math.max(78, pick[1] + (Math.random() - 0.5) * 8));
+      const light = Math.min(78, Math.max(52, pick[2] + (Math.random() - 0.5) * 10));
+      return `hsl(${hue}, ${sat}%, ${light}%)`;
+    };
+
+    class Firework {
+      constructor() {
+        this.x = (0.12 + Math.random() * 0.76) * width; // avoid edges so bursts are visible
+        this.y = height * 0.9 + 20;
+        this.targetY = height * (0.08 + Math.random() * 0.16); // burst near top area
+        this.speed = 2.2 + Math.random() * 1.8;
+        this.color = randomColor();
+        this.exploded = false;
+      }
+      update() {
+        this.y -= this.speed;
+        if (this.y <= this.targetY) {
+          this.exploded = true;
+          explode(this.x, this.y, this.color);
+        }
+      }
+      draw() {
+        ctx.fillStyle = this.color;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, 2, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    class Particle {
+      constructor(x, y, color) {
+        this.x = x;
+        this.y = y;
+        this.vx = (Math.random() - 0.5) * 4.6;
+        this.vy = (Math.random() - 0.6) * 4.6;
+        this.alpha = 1.08;
+        this.decay = 0.009 + Math.random() * 0.016;
+        this.color = color;
+        this.size = 2.4 + Math.random() * 0.9;
+      }
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        this.vy += 0.02;
+        this.alpha -= this.decay;
+      }
+      draw() {
+        if (this.alpha <= 0) return;
+        ctx.save();
+        ctx.globalAlpha = this.alpha;
+        ctx.fillStyle = this.color;
+        ctx.shadowColor = this.color;
+        ctx.shadowBlur = 16;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+
+    const explode = (x, y, color) => {
+      const count = 34 + Math.floor(Math.random() * 22);
+      for (let i = 0; i < count; i += 1) {
+        particles.push(new Particle(x, y, color));
+      }
+    };
+
+    const loop = () => {
+      ctx.clearRect(0, 0, width, height);
+
+      if (Math.random() < 0.02) {
+        fireworks.push(new Firework());
+      }
+
+      fireworks.forEach(fw => fw.update());
+      fireworks = fireworks.filter(fw => !fw.exploded);
+      fireworks.forEach(fw => {
+        ctx.save();
+        ctx.shadowColor = fw.color;
+        ctx.shadowBlur = 12;
+        fw.draw();
+        ctx.restore();
+      });
+
+      particles.forEach(p => p.update());
+      particles = particles.filter(p => p.alpha > 0);
+      particles.forEach(p => p.draw());
+
+      requestAnimationFrame(loop);
+    };
+
+    loop();
+  };
+
+  initFireworks();
 });

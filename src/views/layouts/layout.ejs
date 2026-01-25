@@ -12,10 +12,12 @@
   <link rel="icon" href="/images/logo_transparent.png" type="image/png">
   <link rel="stylesheet" href="/css/main.css">
   <link rel="stylesheet" href="/css/dark.css" id="dark-css" disabled>
+  <script src="/js/dark-init.js"></script>
   <script src="/js/darkmode.js" defer></script>
   <script src="/js/main.js" defer></script>
 </head>
-<body>
+<body class="<%= bodyClass || '' %>">
+  <canvas id="fireworks-canvas" aria-hidden="true"></canvas>
   <%- include('../partials/header') %>
   <main>
     <%- include('../partials/flash') %>
