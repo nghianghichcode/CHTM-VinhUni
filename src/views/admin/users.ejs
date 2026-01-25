@@ -1,0 +1,85 @@
+<section>
+  <div class="page-header">
+    <div>
+      <h2>Quản lý tài khoản</h2>
+      <p class="muted">Tạo, cập nhật vai trò và đặt lại mật khẩu.</p>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <h3>Thêm tài khoản</h3>
+      <form method="post" action="/admin/users/save">
+        <input type="text" name="name" placeholder="Họ tên" required>
+        <input type="email" name="email" placeholder="Email" required>
+        <input type="password" name="password" placeholder="Mật khẩu" required>
+        <select name="role">
+          <option value="user">User</option>
+          <option value="admin">Admin</option>
+        </select>
+        <button type="submit" class="btn">Tạo tài khoản</button>
+      </form>
+    </div>
+
+    <div class="card">
+      <h3>Tổng tài khoản</h3>
+      <div class="stat-inline">
+        <span class="stat-label">Tất cả</span>
+        <span class="stat-value"><%= users.length %></span>
+      </div>
+      <div class="stat-inline">
+        <span class="stat-label">Admin</span>
+        <span class="stat-value"><%= users.filter(u => u.role === 'admin').length %></span>
+      </div>
+      <div class="stat-inline">
+        <span class="stat-label">User</span>
+        <span class="stat-value"><%= users.filter(u => u.role === 'user').length %></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Danh sách tài khoản</h3>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Họ tên</th>
+          <th>Email</th>
+          <th>Vai trò</th>
+          <th>Mật khẩu mới</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% users.forEach(u => { %>
+          <tr>
+            <td>
+              <form method="post" action="/admin/users/save" class="inline-form">
+                <input type="hidden" name="id" value="<%= u._id %>">
+                <input type="text" name="name" value="<%= u.name %>" required>
+            </td>
+            <td>
+                <input type="email" name="email" value="<%= u.email %>" required>
+            </td>
+            <td>
+                <select name="role">
+                  <option value="user" <%= u.role === 'user' ? 'selected' : '' %>>User</option>
+                  <option value="admin" <%= u.role === 'admin' ? 'selected' : '' %>>Admin</option>
+                </select>
+            </td>
+            <td>
+                <input type="password" name="password" placeholder="Để trống nếu không đổi">
+            </td>
+            <td class="actions">
+                <button type="submit">Cập nhật</button>
+              </form>
+              <form method="post" action="/admin/users/<%= u._id %>/delete" onsubmit="return confirm('Xóa tài khoản này?')" class="inline-form">
+                <button type="submit" class="btn danger">Xóa</button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</section>

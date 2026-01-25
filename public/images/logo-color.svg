@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Logo Cứu hộ máy tính VinhUni">
+  <defs>
+    <style>
+      image { image-rendering: optimizeQuality; }
+    </style>
+  </defs>
+  <image href="/images/logo_transparent.png" x="0" y="0" width="512" height="512" preserveAspectRatio="xMidYMid meet" />
+</svg>

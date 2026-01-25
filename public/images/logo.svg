@@ -1,10 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" role="img" aria-label="Logo">
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Logo Cuu ho may tinh VinhUni">
   <defs>
-    <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
-      <stop offset="0" stop-color="#2563eb"/>
-      <stop offset="1" stop-color="#60a5fa"/>
-    </linearGradient>
+    <style>image{image-rendering:optimizeQuality}</style>
   </defs>
-  <rect x="4" y="4" width="56" height="56" rx="12" fill="url(#g)"/>
-  <path d="M20 36h24M20 28h24M24 20h16" stroke="#fff" stroke-width="4" stroke-linecap="round"/>
+  <image href="/images/logo_transparent.png" x="0" y="0" width="512" height="512" preserveAspectRatio="xMidYMid meet" />
 </svg>
