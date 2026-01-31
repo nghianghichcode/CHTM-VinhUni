@@ -10,6 +10,7 @@ module.exports = (loginLimiter, otpLimiter) => {
   router.post('/register', otpLimiter, ensureGuest, authController.register);
   router.get('/forgot', ensureGuest, authController.forgotForm);
   router.post('/forgot', otpLimiter, ensureGuest, authController.forgot);
+  router.get('/resend-otp', otpLimiter, ensureGuest, authController.resendOtp);
   router.get('/verify-otp', ensureGuest, authController.verifyOtpForm);
   router.post('/verify-otp', otpLimiter, ensureGuest, authController.verifyOtp);
   router.get('/reset-password', ensureGuest, authController.resetPasswordForm);
