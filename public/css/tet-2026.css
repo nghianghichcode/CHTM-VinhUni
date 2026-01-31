@@ -1,0 +1,527 @@
+/* TET BINH NGO 2026 - full UI refresh (light + dark), uses CSS variables */
+:root {
+  --bg1: #F8FAFF;
+  --bg2: #EAF2FF;
+  --primary: #C81D25;
+  --text: #0F172A;
+  --muted: #475569;
+  --tet-red: #C81D25;
+  --tet-gold: #F4C430;
+  --tet-orange: #F59E0B;
+  --glass: rgba(15, 23, 42, 0.65);
+  --white: #FFFFFF;
+
+  --surface: #FFFFFF;
+  --surface-soft: #F7FAFF;
+  --border-soft: rgba(15, 23, 42, 0.12);
+  --shadow-soft: 0 18px 40px rgba(15, 23, 42, 0.12);
+  --shadow-glow: 0 12px 28px rgba(244, 196, 48, 0.18);
+  --halo: radial-gradient(circle, rgba(244, 196, 48, 0.22), transparent 70%);
+  --accent: linear-gradient(90deg, var(--tet-red), var(--tet-orange));
+  --link: var(--tet-red);
+  --link-hover: var(--tet-orange);
+  --header-text: var(--white);
+  --header-link: var(--white);
+  --header-link-hover: var(--tet-gold);
+  --card: var(--surface);
+  --header-border: rgba(255, 255, 255, 0.2);
+  --primary-rgb: 200 29 37;
+  --tet-gold-rgb: 244 196 48;
+  --overlay: rgba(15, 23, 42, 0.35);
+  --section-bg: var(--surface-soft);
+}
+
+html.dark {
+  --bg1: #0B1220;
+  --bg2: #111827;
+  --primary: #F87171;
+  --text: #E5E7EB;
+  --muted: #94A3B8;
+  --tet-red: #F87171;
+  --tet-gold: #F4C430;
+  --tet-orange: #F59E0B;
+  --glass: rgba(2, 6, 23, 0.72);
+
+  --surface: rgba(15, 23, 42, 0.82);
+  --surface-soft: rgba(15, 23, 42, 0.64);
+  --border-soft: rgba(148, 163, 184, 0.2);
+  --shadow-soft: 0 18px 40px rgba(2, 6, 23, 0.55);
+  --shadow-glow: 0 16px 36px rgba(244, 196, 48, 0.18);
+  --halo: radial-gradient(circle, rgba(244, 196, 48, 0.18), transparent 70%);
+  --accent: linear-gradient(90deg, var(--tet-red), var(--tet-orange));
+  --link: var(--tet-red);
+  --link-hover: var(--tet-gold);
+  --header-text: #F8FAFC;
+  --header-link: #F8FAFC;
+  --header-link-hover: var(--tet-gold);
+  --card: var(--surface);
+  --header-border: rgba(255, 255, 255, 0.14);
+  --primary-rgb: 248 113 113;
+  --tet-gold-rgb: 244 196 48;
+  --overlay: rgba(2, 6, 23, 0.6);
+  --section-bg: rgba(2, 6, 23, 0.2);
+}
+
+/* Base override */
+body,
+html:not(.dark) body,
+body.home,
+body.auth-page {
+  background: linear-gradient(135deg, var(--bg1), var(--bg2));
+  color: var(--text);
+}
+
+body::before,
+body::after,
+body.auth-page::before,
+body.auth-page::after {
+  opacity: 0;
+  background: none;
+}
+
+#starfield-canvas { opacity: 0; }
+
+body {
+  font-family: "Inter", "Segoe UI", Arial, sans-serif;
+  letter-spacing: 0.1px;
+}
+
+main { padding-top: var(--header-height); }
+
+.container { max-width: 1160px; }
+
+a { color: var(--link); }
+
+a:hover { color: var(--link-hover); }
+
+/* Header */
+.site-header {
+  background: var(--glass);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid transparent;
+  box-shadow: none;
+}
+
+.site-header::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: linear-gradient(90deg, var(--tet-gold), var(--tet-red));
+}
+
+.site-header .logo-title,
+.site-header .logo-slogan,
+.site-header a { color: var(--header-link); }
+
+.site-header a:hover { color: var(--header-link-hover); }
+
+body.home .site-header,
+body.auth-page .site-header {
+  background: var(--glass) !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+body.home .main-nav a,
+body.home .main-nav .drawer-label,
+body.home .main-nav .drawer-sub,
+body.home .mobile-menu-toggle {
+  color: var(--header-link) !important;
+  text-shadow: none !important;
+}
+
+body.home .main-nav a::after {
+  background: linear-gradient(90deg, var(--tet-gold), var(--tet-red)) !important;
+}
+
+body.home .main-nav .btn {
+  background: var(--accent) !important;
+  color: var(--white) !important;
+  box-shadow: var(--shadow-soft) !important;
+}
+
+body.home .header-info {
+  background: rgb(var(--primary-rgb) / 0.08) !important;
+  border: 1px solid var(--border-soft) !important;
+  color: var(--text) !important;
+  box-shadow: var(--shadow-soft) !important;
+}
+
+body.home .header-info .header-meta { color: var(--muted) !important; }
+
+.site-footer {
+  background: var(--surface-soft);
+  color: var(--text);
+  border-top: 1px solid var(--border-soft);
+}
+
+.main-nav { color: var(--text); }
+
+.drawer-header,
+.drawer-brand,
+.drawer-text { color: var(--text); }
+
+.nav-overlay { background: var(--overlay); }
+
+body.home .main-nav,
+body.auth-page .main-nav {
+  background: var(--surface) !important;
+  border-left: 1px solid var(--border-soft) !important;
+  box-shadow: var(--shadow-soft) !important;
+}
+
+.mobile-menu-toggle {
+  background: var(--surface);
+  border: 1px solid var(--border-soft);
+  color: var(--text);
+}
+
+/* Hero */
+.hero {
+  position: relative;
+  background: linear-gradient(180deg, var(--bg1), var(--bg2));
+  background-image:
+    radial-gradient(circle at 80% 20%, rgba(244, 196, 48, 0.18), transparent 60%),
+    linear-gradient(180deg, var(--bg1), var(--bg2));
+  overflow: hidden;
+  min-height: 0;
+  padding: calc(var(--header-height) + 16px) 0 4em !important;
+  display: block;
+}
+
+.stellar-dust,
+.aurora-rings,
+.hero-decor { display: none !important; }
+
+.hero::before {
+  content: "";
+  position: absolute;
+  top: -160px;
+  right: -140px;
+  width: 520px;
+  height: 520px;
+  background: var(--halo);
+  pointer-events: none;
+}
+
+.hero::after {
+  opacity: 0 !important;
+  background: none !important;
+  animation: none !important;
+}
+
+.hero-inner {
+  grid-template-columns: 1fr !important;
+  text-align: left;
+  gap: 1.6em;
+  padding: 2.8em 0 2em !important;
+  justify-items: start;
+}
+
+.hero-content { max-width: 720px; }
+
+.hero .hero-badge {
+  background: var(--surface);
+  color: var(--tet-red);
+  border: 1px solid var(--border-soft);
+  box-shadow: var(--shadow-soft);
+}
+
+.hero h1,
+.hero h2 { color: var(--text); }
+
+.hero p { color: var(--muted); }
+
+  min-height: 0;
+
+.hero h1 { font-weight: 700; letter-spacing: 0.2px; }
+
+body.home .hero h1,
+body.tet-page .hero h1 {
+  color: var(--text) !important;
+  text-shadow: none !important;
+}
+
+body.home .hero p,
+body.tet-page .hero p {
+  color: var(--muted) !important;
+}
+
+body.home .hero-badge,
+body.tet-page .hero-badge {
+  background: var(--surface) !important;
+  color: var(--tet-red) !important;
+  border: 1px solid var(--border-soft) !important;
+  box-shadow: var(--shadow-soft) !important;
+}
+
+body.home .hero-message,
+body.home .scan-panel,
+body.home .count-item,
+body.tet-page .hero-message,
+body.tet-page .scan-panel,
+body.tet-page .count-item {
+  background: rgba(255, 255, 255, 0.85) !important;
+  border: 1px solid rgba(15, 23, 42, 0.08) !important;
+  color: var(--text) !important;
+  box-shadow: var(--shadow-soft) !important;
+}
+
+body.home .scan-panel,
+body.tet-page .scan-panel {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+  grid-template-columns: 1fr auto !important;
+}
+
+body.home .scan-label,
+body.tet-page .scan-label {
+  color: var(--text) !important;
+}
+
+body.home .scan-bar,
+body.tet-page .scan-bar {
+  background: linear-gradient(90deg, rgba(15, 23, 42, 0.2), rgba(15, 23, 42, 0.08)) !important;
+  height: 5px !important;
+  position: relative !important;
+  overflow: hidden !important;
+  grid-column: 1 / -1 !important;
+  width: 100% !important;
+  margin-top: 6px;
+}
+
+body.home .scan-bar::before,
+body.tet-page .scan-bar::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.45) 50%, transparent 100%) !important;
+  transform: translateX(-80%);
+  animation: scanSweep 1.8s ease-in-out infinite !important;
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+body.home .scan-fill,
+body.tet-page .scan-fill {
+  min-width: 10% !important;
+  transition: width 0.35s ease !important;
+  box-shadow: 0 0 12px rgba(185, 28, 28, 0.45), 0 0 22px rgba(249, 115, 22, 0.35) !important;
+  background-size: 200% 100% !important;
+  animation: scanGradient 2.8s linear infinite !important;
+}
+
+body.home .scan-fill,
+body.tet-page .scan-fill {
+  background: linear-gradient(90deg, var(--tet-red), var(--tet-orange)) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.home .scan-bar::before,
+  body.tet-page .scan-bar::before,
+  body.home .scan-fill,
+  body.tet-page .scan-fill {
+    animation: none !important;
+  }
+}
+
+body.home .scan-value,
+body.tet-page .scan-value,
+body.home .count-item strong,
+body.tet-page .count-item strong {
+  color: var(--tet-red) !important;
+}
+
+body.home .count-item span,
+body.tet-page .count-item span {
+  color: var(--muted) !important;
+}
+
+/* Buttons */
+.btn,
+.button.btn,
+button.btn,
+a.btn { border-radius: 999px; }
+
+.btn.btn-primary,
+a.btn.btn-primary,
+button.btn.btn-primary {
+  background: var(--accent);
+  border: 1px solid var(--header-border);
+  color: var(--white);
+  box-shadow: var(--shadow-soft);
+}
+
+.btn.btn-secondary,
+a.btn.btn-secondary,
+button.btn.btn-secondary {
+  background: var(--surface);
+  color: var(--tet-red);
+  border: 1px solid rgb(var(--primary-rgb) / 0.35);
+}
+
+.hero .btn {
+  border: 1px solid rgb(var(--tet-gold-rgb) / 0.45) !important;
+  box-shadow: var(--shadow-soft) !important;
+}
+
+.hero .btn::after { opacity: 0 !important; }
+
+/* Sections */
+.section-head h2 { font-weight: 700; color: var(--text); }
+.section-head p { color: var(--muted); }
+.section-line { background: linear-gradient(90deg, var(--tet-gold), var(--tet-red)); }
+
+body.home .featured-tips h2,
+body.home .categories h2,
+body.home .rescue-steps h2,
+body.home .faq h2,
+body.home .contact h2,
+body.tet-page .featured-tips h2,
+body.tet-page .categories h2,
+body.tet-page .rescue-steps h2,
+body.tet-page .faq h2,
+body.tet-page .contact h2 {
+  color: var(--text) !important;
+  text-shadow: none !important;
+}
+
+.intro-dark,
+.moments,
+.achievements,
+.highlights,
+.featured-tips,
+.categories,
+.rescue-steps,
+.faq,
+.contact {
+  background: var(--section-bg) !important;
+  color: var(--text);
+  border-radius: 18px;
+  padding: 2.4em 0;
+}
+
+.intro-dark .container,
+.moments.container,
+.achievements.container,
+.highlights.container,
+.featured-tips.container,
+.categories.container,
+.rescue-steps.container,
+.faq.container,
+.contact.container {
+  padding-left: 1.6em;
+  padding-right: 1.6em;
+}
+
+.intro-dark::before { display: none !important; opacity: 0 !important; }
+
+.intro-dark h2,
+.intro-dark .section-head h2 {
+  color: var(--text) !important;
+  text-shadow: none !important;
+  text-transform: none;
+}
+
+.card,
+.moment-card,
+.highlight-card,
+.stat-card,
+.intro-panel,
+.featured-tips .card,
+.categories .card,
+.highlight-card .highlight-body,
+.moments-slider,
+.accordion-item {
+  background: var(--card);
+  border-radius: 16px;
+  box-shadow: var(--shadow-soft);
+  color: var(--text);
+  border: 1px solid var(--border-soft);
+}
+
+.card:hover,
+.moment-card:hover,
+.highlight-card:hover,
+.stat-card:hover,
+.intro-panel:hover {
+  box-shadow: var(--shadow-soft), 0 0 0 1px rgb(var(--tet-gold-rgb) / 0.2), var(--shadow-glow);
+}
+
+.intro-panel,
+.intro-media img {
+  background: var(--surface);
+  border: 1px solid var(--border-soft);
+  box-shadow: var(--shadow-soft);
+}
+
+.intro-media img { border-radius: 16px; }
+
+.moments-viewport { padding-left: 0; }
+.moments-track { gap: 1.2em; }
+
+.accordion {
+  background: var(--surface);
+  border: 1px solid var(--border-soft);
+  box-shadow: var(--shadow-soft);
+}
+
+.accordion-item { border-bottom: 1px solid var(--border-soft); }
+
+.accordion-title,
+.accordion-content { color: var(--text); }
+
+.accordion-title { font-weight: 600; }
+
+.steps li {
+  background: var(--surface);
+  border: 1px solid var(--border-soft);
+  color: var(--text);
+}
+
+.steps li:hover { border-color: rgb(var(--tet-gold-rgb) / 0.3); }
+
+.contact form input,
+.contact form textarea {
+  background: var(--surface);
+  border: 1px solid var(--border-soft);
+}
+
+.contact form input::placeholder,
+.contact form textarea::placeholder { color: var(--muted); }
+
+/* Tet background layers */
+.tet-2026-lantern-layer,
+.tet-2026-fireworks-canvas {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.tet-2026-lantern {
+  position: absolute;
+  filter: blur(0.6px);
+  opacity: 0.18;
+  animation-name: tet-2026-lantern-float;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  will-change: transform;
+}
+
+@keyframes tet-2026-lantern-float {
+  0% { transform: translateY(-12vh) translateX(0); }
+  50% { transform: translateY(52vh) translateX(-8px); }
+  100% { transform: translateY(108vh) translateX(8px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tet-2026-lantern { animation: none !important; }
+}

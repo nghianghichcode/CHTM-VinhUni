@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "nodemon src/app.js",
     "start": "node src/app.js",
-    "seed": "node scripts/seed.js"
+    "seed": "node scripts/seed.js",
+    "migrate:db": "node scripts/migrate-db.js"
   },
   "dependencies": {
     "bcrypt": "^5.1.0",

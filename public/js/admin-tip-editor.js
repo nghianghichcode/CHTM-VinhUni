@@ -204,10 +204,34 @@
     });
   };
 
+  const initScanEffect = () => {
+    const containers = document.querySelectorAll('[data-scan]');
+    containers.forEach(container => {
+      const bar = container.querySelector('[data-scan-bar]');
+      const text = container.querySelector('[data-scan-text]');
+      if (!bar && !text) return;
+
+      let progress = Number(container.dataset.scanStart || 0);
+      const speed = Number(container.dataset.scanSpeed || 0.8);
+      const max = Number(container.dataset.scanMax || 100);
+
+      const tick = () => {
+        progress = progress + speed;
+        if (progress > max) progress = 0;
+        if (bar) bar.style.width = `${Math.floor(progress)}%`;
+        if (text) text.textContent = `${Math.floor(progress)}%`;
+      };
+
+      tick();
+      setInterval(tick, 40);
+    });
+  };
+
   document.addEventListener('DOMContentLoaded', () => {
     bindAddMedia();
     bindTextareaMedia();
     initTinyMCE();
     preventWindowDrop();
+    initScanEffect();
   });
 })();

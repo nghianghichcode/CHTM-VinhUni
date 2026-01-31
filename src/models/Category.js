@@ -1,8 +1,6 @@
 const mongoose = require('mongoose');
+const Taxonomy = require('./Taxonomy');
 
-const categorySchema = new mongoose.Schema({
-  name: { type: String, required: true, trim: true },
-  slug: { type: String, required: true, unique: true, trim: true }
-});
+const categorySchema = new mongoose.Schema({});
 
-module.exports = mongoose.model('Category', categorySchema);
+module.exports = Taxonomy.discriminator('Category', categorySchema, 'category');

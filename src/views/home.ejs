@@ -1,26 +1,106 @@
 <section class="hero">
-  <div class="floating-lanterns" aria-hidden="true">
-    <span style="--i:1"></span>
-    <span style="--i:2"></span>
-    <span style="--i:3"></span>
-    <span style="--i:4"></span>
-    <span style="--i:5"></span>
-  </div>
   <div class="golden-rings" aria-hidden="true"></div>
   <div class="container hero-inner">
     <div class="hero-content">
-      <span class="hero-badge">ĐỘI CỨU HỘ MÁY TÍNH VINHUNI</span>
-      <h1 data-typewriter="hero-title" data-text="Thủ Thuật\n[accent:Cứu Hộ] Máy Tính">Thủ Thuật<br><span class="accent">Cứu Hộ</span> Máy Tính</h1>
-      <p data-typewriter="hero-desc" data-text="Cổng thông tin chia sẻ thủ thuật, cứu hộ, hỗ trợ Windows, Office, mạng, bảo mật, tăng tốc, sửa lỗi.">Cổng thông tin chia sẻ thủ thuật, cứu hộ, hỗ trợ Windows, Office, mạng, bảo mật, tăng tốc, sửa lỗi.</p>
+      <span class="hero-badge">ĐÓN TẾT AN TÂM · XUÂN SỐ VINHUNI</span>
+      <h1 data-typewriter="hero-title" data-text="Tết Bính Ngọ 2026\n[accent:Năm Mới], An Khang">Tết Bính Ngọ 2026<br><span class="accent">Máy Khỏe</span>, Tết Vui</h1>
+      <p data-typewriter="hero-desc" data-text="Kiểm tra, bảo vệ và tối ưu máy tính trước thềm năm mới.">Kiểm tra, bảo vệ và tối ưu máy tính trước thềm năm mới.</p>
+      <div class="hero-message" id="tet-greeting">Đón Tết an tâm – Máy tính khỏe – Học tập và làm việc suôn sẻ.</div>
+      <div class="countdown" id="tet-countdown" aria-live="polite">
+        <div class="count-item"><strong id="cd-days">00</strong><span>Ngày</span></div>
+        <div class="count-item"><strong id="cd-hours">00</strong><span>Giờ</span></div>
+        <div class="count-item"><strong id="cd-minutes">00</strong><span>Phút</span></div>
+        <div class="count-item"><strong id="cd-seconds">00</strong><span>Giây</span></div>
+      </div>
+      <div class="device-panel" aria-live="polite">
+        <div class="device-head">
+          <span>Thiết bị truy cập</span>
+        </div>
+        <div class="device-grid" id="device-grid">
+          <div class="device-item"><span>Thiết bị</span><strong id="device-type">--</strong></div>
+          <div class="device-item"><span>Hệ điều hành</span><strong id="device-os">--</strong></div>
+          <div class="device-item"><span>Trình duyệt</span><strong id="device-browser">--</strong></div>
+        </div>
+        <div class="device-note">* Thông tin nhận diện cơ bản từ trình duyệt.</div>
+      </div>
       <div class="cta-group">
-        <a href="/tips" class="btn btn-primary">Khám phá ngay</a>
-        <a href="/rescue" class="btn btn-secondary">Hướng dẫn</a>
+        <a href="/tips" class="btn btn-primary">Quét sức khỏe máy</a>
+        <a href="/rescue" class="btn btn-secondary" data-fireworks-trigger>Nhận hỗ trợ nhanh</a>
       </div>
     </div>
     <div class="hero-decor" aria-hidden="true"></div>
   </div>
 </section>
-<canvas id="fireworks-canvas" aria-hidden="true"></canvas>
+<section class="tet-tech container">
+  <div class="section-head">
+    <h2>Góc Tết Công Nghệ</h2>
+    <p>Dọn dẹp, bảo vệ và tăng tốc để máy tính sẵn sàng cho năm mới.</p>
+    <div class="section-line"></div>
+  </div>
+  <div class="tet-tech-grid">
+    <article class="tet-card">
+      <div class="tet-icon">🧹</div>
+      <h3>Dọn rác máy tính đón Tết</h3>
+      <p>Giải phóng dung lượng, xóa file tạm, làm mới hệ thống.</p>
+    </article>
+    <article class="tet-card">
+      <div class="tet-icon">🛡️</div>
+      <h3>Diệt virus – chống mã độc cuối năm</h3>
+      <p>Quét bảo mật, tăng cường phòng vệ dữ liệu quan trọng.</p>
+    </article>
+    <article class="tet-card">
+      <div class="tet-icon">💾</div>
+      <h3>Sao lưu dữ liệu quan trọng</h3>
+      <p>Backup nhanh tài liệu, ảnh, học tập trước kỳ nghỉ dài.</p>
+    </article>
+    <article class="tet-card">
+      <div class="tet-icon">⚡</div>
+      <h3>Tăng tốc máy cho năm mới</h3>
+      <p>Tối ưu hiệu năng để học tập và làm việc mượt mà hơn.</p>
+    </article>
+  </div>
+</section>
+<section class="tet-lucky container">
+  <div class="section-head">
+    <h2>Lì xì công nghệ</h2>
+    <p>Nhận một mẹo nhỏ, một phím tắt hay một lời chúc đầu năm.</p>
+    <div class="section-line"></div>
+  </div>
+  <div class="lucky-box">
+    <button type="button" class="btn btn-primary" id="lucky-btn" data-fireworks-trigger>Nhận lì xì 2026</button>
+    <div class="lucky-result" id="lucky-result">Sẵn sàng nhận lì xì ✨</div>
+  </div>
+</section>
+<section class="tet-timeline container">
+  <div class="section-head">
+    <h2>Timeline Xuân của Đội Cứu Hộ</h2>
+    <p>Hành trình hỗ trợ xuyên suốt trước, trong và sau Tết.</p>
+    <div class="section-line"></div>
+  </div>
+  <div class="timeline-vertical">
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-content">
+        <h3>Trước Tết</h3>
+        <p>Tổng kiểm tra hệ thống, tối ưu và sao lưu dữ liệu.</p>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-content">
+        <h3>Trong Tết</h3>
+        <p>Hỗ trợ online, xử lý sự cố nhanh trong kỳ nghỉ.</p>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-content">
+        <h3>Sau Tết</h3>
+        <p>Khôi phục – tối ưu – cài đặt để máy chạy ổn định.</p>
+      </div>
+    </div>
+  </div>
+</section>
 <section class="intro intro-dark">
   <div class="container">
     <div class="section-head center">
@@ -44,8 +124,8 @@
 </section>
 <section class="moments container">
   <div class="section-head">
-    <h2>Khoảnh khắc đáng nhớ</h2>
-    <p>Những hoạt động nổi bật và các buổi hỗ trợ thực tế của đội cứu hộ.</p>
+    <h2>Khoảnh khắc Tết VinhUni</h2>
+    <p>Thành viên trực hỗ trợ, workshop cuối năm và hoạt động cộng đồng.</p>
   </div>
   <div class="moments-slider" data-slider="moments">
     <button class="slider-btn prev" type="button" aria-label="Trước">‹</button>
