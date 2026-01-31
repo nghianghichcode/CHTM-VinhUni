@@ -35,7 +35,17 @@ exports.login = async (req, res) => {
     req.flash('error', 'Sai email hoặc mật khẩu');
     return res.redirect('/auth/login');
   }
-  req.session.user = { _id: user._id, name: user.name, email: user.email, role: user.role };
+  req.session.user = {
+    _id: user._id,
+    name: user.name,
+    email: user.email,
+    role: user.role,
+    avatarUrl: user.avatarUrl || '',
+    dob: user.dob || null,
+    phone: user.phone || '',
+    zalo: user.zalo || '',
+    facebook: user.facebook || ''
+  };
   req.flash('success', 'Đăng nhập thành công.');
   res.redirect(user.role === 'admin' ? '/admin' : '/');
 };
@@ -231,7 +241,12 @@ exports.verifyOtp = async (req, res) => {
       _id: createdUser._id,
       name: createdUser.name,
       email: createdUser.email,
-      role: createdUser.role
+      role: createdUser.role,
+      avatarUrl: createdUser.avatarUrl || '',
+      dob: createdUser.dob || null,
+      phone: createdUser.phone || '',
+      zalo: createdUser.zalo || '',
+      facebook: createdUser.facebook || ''
     };
     req.flash('success', 'Đăng ký thành công. Chào mừng bạn!');
     return res.redirect('/');

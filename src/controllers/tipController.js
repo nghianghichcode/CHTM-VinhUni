@@ -44,8 +44,17 @@ exports.byCategory = async (req, res) => {
   const category = await Category.findOne({ slug: req.params.slug });
   if (!category) return res.status(404).render('error/404');
   const tips = await Tip.find({ category: category._id, status: 'published' }).populate('category tags').limit(20);
+  const categories = await Category.find();
+  const tags = await Tag.find();
   res.render('tips/list', {
-    tips, categories: [category], tags: [], meta: getMeta({ title: `Thủ thuật: ${category.name}` })
+    tips,
+    categories,
+    tags,
+    query: '',
+    selectedCategory: category._id,
+    selectedTag: '',
+    selectedSort: '',
+    meta: getMeta({ title: `Thủ thuật: ${category.name}` })
   });
 };
 
@@ -53,7 +62,16 @@ exports.byTag = async (req, res) => {
   const tag = await Tag.findOne({ slug: req.params.slug });
   if (!tag) return res.status(404).render('error/404');
   const tips = await Tip.find({ tags: tag._id, status: 'published' }).populate('category tags').limit(20);
+  const categories = await Category.find();
+  const tags = await Tag.find();
   res.render('tips/list', {
-    tips, categories: [], tags: [tag], meta: getMeta({ title: `Thủ thuật: ${tag.name}` })
+    tips,
+    categories,
+    tags,
+    query: '',
+    selectedCategory: '',
+    selectedTag: tag._id,
+    selectedSort: '',
+    meta: getMeta({ title: `Thủ thuật: ${tag.name}` })
   });
 };
