@@ -629,7 +629,7 @@ body:not(.home) main { padding-top: var(--header-height); }
   position: fixed;
   right: 24px;
   top: calc(var(--header-height) + 16px);
-  z-index: 1200;
+  z-index: 50000;
   margin: 0;
   min-width: 240px;
   max-width: 420px;

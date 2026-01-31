@@ -35,9 +35,9 @@
 
         <div class="auth-footer">
           <% if (purpose === 'register') { %>
-            <p>Chưa nhận được mã? <a href="/auth/register" class="link-tet">Đăng ký lại</a></p>
+            <p>Chưa nhận được mã? <a href="/auth/resend-otp?purpose=register" class="link-tet">Gửi lại OTP</a></p>
           <% } else { %>
-            <p>Chưa nhận được mã? <a href="/auth/forgot" class="link-tet">Gửi lại OTP</a></p>
+            <p>Chưa nhận được mã? <a href="/auth/resend-otp?purpose=reset" class="link-tet">Gửi lại OTP</a></p>
           <% } %>
         </div>
       </div>

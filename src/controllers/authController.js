@@ -114,8 +114,53 @@ exports.forgot = async (req, res) => {
   }
 
   req.session.resetEmail = emailNormalized;
-  req.flash('success', 'Nếu email tồn tại, mã OTP đã được gửi.');
+  req.flash('success', 'Đã gửi mã OTP về mail, vui lòng kiểm tra.');
   res.redirect('/auth/verify-otp?purpose=reset');
+};
+
+exports.resendOtp = async (req, res) => {
+  const purpose = req.query.purpose;
+  if (!['register', 'reset'].includes(purpose)) {
+    return res.redirect('/auth/login');
+  }
+
+  const email = purpose === 'register'
+    ? req.session.pendingRegister?.email
+    : req.session.resetEmail;
+
+  if (!email) {
+    req.flash('error', 'Phiên làm việc đã hết hạn. Vui lòng thực hiện lại.');
+    return res.redirect(purpose === 'register' ? '/auth/register' : '/auth/forgot');
+  }
+
+  const emailNormalized = email.trim().toLowerCase();
+  if (purpose === 'reset') {
+    const user = await User.findOne({ email: emailNormalized });
+    if (!user) {
+      req.flash('success', 'Đã gửi mã OTP về mail, vui lòng kiểm tra.');
+      return res.redirect('/auth/verify-otp?purpose=reset');
+    }
+  }
+
+  const otp = generateOtp();
+  const expiresAt = new Date(Date.now() + OTP_TTL_MINUTES * 60 * 1000);
+  await OtpToken.deleteMany({ email: emailNormalized, purpose });
+  await OtpToken.create({
+    email: emailNormalized,
+    purpose,
+    codeHash: await bcrypt.hash(otp, 10),
+    expiresAt
+  });
+
+  try {
+    await sendOtpEmail({ to: emailNormalized, code: otp, purpose, expiresAt });
+    req.flash('success', 'Đã gửi mã OTP về mail, vui lòng kiểm tra.');
+    return res.redirect(`/auth/verify-otp?purpose=${purpose}`);
+  } catch (err) {
+    console.error('Send OTP failed:', err.message);
+    req.flash('error', 'Không thể gửi email OTP. Vui lòng thử lại sau.');
+    return res.redirect(`/auth/verify-otp?purpose=${purpose}`);
+  }
 };
 
 exports.verifyOtpForm = (req, res) => {
