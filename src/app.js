@@ -1,4 +1,4 @@
-require('dotenv').config();
+﻿require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
@@ -40,7 +40,7 @@ app.use(helmet({
 // Logger
 app.use(morgan('dev'));
 
-// Static (phục vụ public ngoài src)
+// Static (phá»¥c vá»¥ public ngoÃ i src)
 app.use(express.static(path.join(__dirname, '../public')));
 
 // Body parser
@@ -81,12 +81,17 @@ app.use(setLocals);
 const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 8,
-  message: 'Quá nhiều lần đăng nhập, vui lòng thử lại sau.'
+  message: 'QuÃ¡ nhiá»u láº§n Ä‘Äƒng nháº­p, vui lÃ²ng thá»­ láº¡i sau.'
+});
+const otpLimiter = rateLimit({
+  windowMs: 10 * 60 * 1000,
+  max: 6,
+  message: 'Bạn thao tác quá nhanh, vui lòng thử lại sau.'
 });
 const rescueLimiter = rateLimit({
   windowMs: 10 * 60 * 1000,
   max: 5,
-  message: 'Bạn gửi quá nhiều phiếu cứu hộ, vui lòng thử lại sau.'
+  message: 'Báº¡n gá»­i quÃ¡ nhiá»u phiáº¿u cá»©u há»™, vui lÃ²ng thá»­ láº¡i sau.'
 });
 
 // Routes
@@ -97,7 +102,7 @@ app.use('/tag', require('./routes/tag'));
 app.use('/rescue', require('./routes/rescue')(rescueLimiter));
 app.use('/profile', require('./routes/profile'));
 app.use('/admin', require('./routes/admin'));
-app.use('/auth', require('./routes/auth')(loginLimiter));
+app.use('/auth', require('./routes/auth')(loginLimiter, otpLimiter));
 
 // Sitemap & robots
 app.use('/sitemap.xml', require('./routes/sitemap'));

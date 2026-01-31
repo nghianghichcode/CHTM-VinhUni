@@ -805,4 +805,20 @@ document.addEventListener('DOMContentLoaded', function() {
   };
 
   initImageViewer();
+
+  const initToasts = () => {
+    const toasts = document.querySelectorAll('.alert.toast');
+    if (!toasts.length) return;
+    toasts.forEach((toast) => {
+      requestAnimationFrame(() => toast.classList.add('show'));
+      if (toast.dataset.autohide !== 'true') return;
+      const hide = () => {
+        toast.classList.add('hide');
+        setTimeout(() => toast.remove(), 300);
+      };
+      setTimeout(hide, 3000);
+    });
+  };
+
+  initToasts();
 });
