@@ -48,8 +48,16 @@
       </div>
 
       <% if (user) { %>
-        <a href="/profile">Tài khoản</a>
-        <a href="/auth/logout">Đăng xuất</a>
+        <% const userInitial = (user.name || 'U').trim()[0]?.toUpperCase(); %>
+        <span class="header-user" aria-label="Người dùng đăng nhập">
+          <% if (user.avatarUrl) { %>
+            <img class="header-user__avatar" src="<%= user.avatarUrl %>" alt="Ảnh đại diện">
+          <% } else { %>
+            <span class="header-user__avatar" aria-hidden="true"><%= userInitial %></span>
+          <% } %>
+          <span class="header-user__greet">Xin chào,</span>
+          <span class="header-user__name"><%= user.name %></span>
+        </span>
       <% } else { %>
         <a href="/auth/login" class="btn">Đăng nhập</a>
       <% } %>
@@ -65,6 +73,11 @@
           </svg>
         </span>
       </label>
+
+      <% if (user) { %>
+        <a href="/profile">Tài khoản</a>
+        <a href="/auth/logout">Đăng xuất</a>
+      <% } %>
     </nav>
 
     <div class="nav-overlay" aria-hidden="true"></div>

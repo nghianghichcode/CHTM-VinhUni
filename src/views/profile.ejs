@@ -1,26 +1,107 @@
-<section class="container">
-  <div class="section-head">
-    <h2>Tài khoản</h2>
-    <p>Xin chào, <b><%= user?.name %></b></p>
-  </div>
-  <div class="card">
-    <h3>Phiếu cứu hộ của tôi</h3>
-    <table class="table">
-      <thead><tr><th>Mã</th><th>Trạng thái</th><th>Thiết bị</th><th>Thời gian</th><th></th></tr></thead>
-      <tbody>
-        <% if (!tickets.length) { %>
-          <tr><td colspan="5">Chưa có phiếu nào.</td></tr>
+<% const totalTickets = tickets.length; %>
+<% const activeTickets = tickets.filter(t => !['done', 'closed', 'resolved', 'completed'].includes(String(t.status || '').toLowerCase())).length; %>
+
+<section class="profile-hero">
+  <div class="container">
+    <div class="profile-card">
+      <div class="profile-avatar" aria-hidden="true">
+        <% if (user?.avatarUrl) { %>
+          <img src="<%= user.avatarUrl %>" alt="Ảnh đại diện">
+        <% } else { %>
+          <span><%= (user?.name || 'U').trim()[0]?.toUpperCase() %></span>
         <% } %>
-        <% tickets.forEach(t => { %>
-          <tr>
-            <td><%= t._id.toString().slice(-6) %></td>
-            <td><%= t.status %></td>
-            <td><%= t.deviceType %> - <%= t.os %></td>
-            <td><%= new Date(t.createdAt).toLocaleString('vi-VN') %></td>
-            <td><a href="/rescue/<%= t._id %>">Chi tiết</a></td>
-          </tr>
-        <% }) %>
-      </tbody>
-    </table>
+      </div>
+      <div class="profile-info">
+        <p class="profile-label">Hồ sơ người dùng</p>
+        <h2>Xin chào, <span><%= user?.name %></span></h2>
+        <p class="profile-email"><%= user?.email %></p>
+        <form class="profile-form" action="/profile/update" method="post">
+          <div class="profile-form__grid">
+            <div class="form-group">
+              <label for="name">Họ và tên</label>
+              <input type="text" id="name" name="name" value="<%= user?.name || '' %>" required>
+            </div>
+            <div class="form-group">
+              <label for="dob">Ngày sinh</label>
+              <input type="date" id="dob" name="dob" value="<%= user?.dob ? new Date(user.dob).toISOString().slice(0,10) : '' %>">
+            </div>
+            <div class="form-group">
+              <label for="phone">Số điện thoại</label>
+              <input type="tel" id="phone" name="phone" value="<%= user?.phone || '' %>" placeholder="VD: 0987xxxxxx">
+            </div>
+            <div class="form-group">
+              <label for="zalo">Zalo</label>
+              <input type="text" id="zalo" name="zalo" value="<%= user?.zalo || '' %>" placeholder="SĐT hoặc ID Zalo">
+            </div>
+            <div class="form-group form-span">
+              <label for="facebook">Link Facebook (không bắt buộc)</label>
+              <input type="url" id="facebook" name="facebook" value="<%= user?.facebook || '' %>" placeholder="https://facebook.com/username">
+            </div>
+          </div>
+          <button class="btn" type="submit">Lưu thông tin</button>
+        </form>
+        <form class="profile-upload" action="/profile/avatar" method="post" enctype="multipart/form-data">
+          <label class="profile-upload__label" for="avatar">Cập nhật ảnh đại diện</label>
+          <input class="profile-upload__input" type="file" id="avatar" name="avatar" accept="image/*" required>
+          <button class="btn" type="submit">Lưu ảnh</button>
+        </form>
+        <div class="profile-stats">
+          <div class="profile-stat">
+            <strong><%= totalTickets %></strong>
+            <span>Tổng phiếu cứu hộ</span>
+          </div>
+          <div class="profile-stat">
+            <strong><%= activeTickets %></strong>
+            <span>Đang xử lý</span>
+          </div>
+          <div class="profile-stat">
+            <strong><%= totalTickets - activeTickets %></strong>
+            <span>Đã hoàn tất</span>
+          </div>
+        </div>
+      </div>
+      <div class="profile-actions">
+        <a class="btn" href="/rescue">Tạo phiếu mới</a>
+        <a class="btn btn-secondary" href="/auth/logout">Đăng xuất</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="profile-content">
+  <div class="container">
+    <div class="profile-section">
+      <div class="section-head">
+        <h2>Phiếu cứu hộ của tôi</h2>
+        <p>Quản lý và theo dõi tiến độ các yêu cầu cứu hộ.</p>
+      </div>
+      <div class="card profile-table-card">
+        <table class="table profile-table">
+          <thead>
+            <tr>
+              <th>Mã</th>
+              <th>Trạng thái</th>
+              <th>Thiết bị</th>
+              <th>Thời gian</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (!tickets.length) { %>
+              <tr><td colspan="5">Chưa có phiếu nào.</td></tr>
+            <% } %>
+            <% tickets.forEach(t => { %>
+              <tr>
+                <td><%= t._id.toString().slice(-6) %></td>
+                <td><span class="status-pill"><%= t.status %></span></td>
+                <td><%= t.deviceType %> - <%= t.os %></td>
+                <td><%= new Date(t.createdAt).toLocaleString('vi-VN') %></td>
+                <td><a class="link-cta" href="/rescue/<%= t._id %>">Chi tiết</a></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
 </section>
