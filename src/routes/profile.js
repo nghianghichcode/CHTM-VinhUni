@@ -41,9 +41,17 @@ router.post('/avatar', ensureAuth, upload.single('avatar'), async (req, res) => 
     return res.redirect('/profile');
   }
 
+  const currentUser = await User.findById(req.session.user._id).select('avatarUrl');
+  const oldAvatarUrl = currentUser?.avatarUrl;
   const avatarUrl = `/uploads/avatars/${req.file.filename}`;
   await User.updateOne({ _id: req.session.user._id }, { $set: { avatarUrl } });
   req.session.user.avatarUrl = avatarUrl;
+
+  if (oldAvatarUrl && oldAvatarUrl.startsWith('/uploads/avatars/')) {
+    const oldPath = path.join(__dirname, '../../public', oldAvatarUrl);
+    fs.unlink(oldPath, () => {});
+  }
+
   req.flash('success', 'Cập nhật ảnh đại diện thành công.');
   return res.redirect('/profile');
 });
