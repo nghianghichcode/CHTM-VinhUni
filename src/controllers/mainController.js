@@ -24,7 +24,7 @@ exports.home = async (req, res) => {
     tags,
     stats,
     meta: getMeta({ title: 'Cứu hộ máy tính VinhUni' }),
-    bodyClass: 'home tet-binh-ngo'
+    bodyClass: 'home'
   });
 };
 

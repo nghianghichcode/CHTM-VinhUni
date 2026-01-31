@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Admin - <%= meta?.title || 'Dashboard' %></title>
   <link rel="stylesheet" href="/css/admin.css">
+  <script src="/js/dark-init.js"></script>
+  <script src="/js/darkmode.js" defer></script>
 </head>
 <body>
   <header class="admin-header">
@@ -17,6 +19,12 @@
       <a href="/admin/contacts">Contacts</a>
       <a href="/">Về trang chủ</a>
     </nav>
+    <div class="admin-actions">
+      <label class="admin-theme-switch" title="Chuyển dark mode">
+        <input type="checkbox" id="dark-toggle" aria-label="Chuyển chế độ sáng/tối">
+        <span class="track"><span class="dot"></span></span>
+      </label>
+    </div>
   </header>
   <main>
     <%- include('../partials/flash') %>

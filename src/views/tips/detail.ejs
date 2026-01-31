@@ -1,14 +1,14 @@
-<section class="container" style="max-width:900px;">
-  <div class="section-head">
+<section class="container tip-detail">
+  <div class="section-head tip-detail-head">
     <h2><%= tip.title %></h2>
     <p><%= tip.excerpt %></p>
   </div>
-  <div class="card">
-    <img src="<%= (!tip.thumbnail || tip.thumbnail === '/images/og-default.png') ? '/images/banner.jpg' : tip.thumbnail %>" alt="<%= tip.title %>" style="width:100%; border-radius: var(--radius);">
-    <div style="margin-top:1em;">
+  <div class="card tip-detail-card">
+    <img class="tip-detail-thumb" src="<%= (!tip.thumbnail || tip.thumbnail === '/images/og-default.png') ? '/images/banner.jpg' : tip.thumbnail %>" alt="<%= tip.title %>">
+    <div class="tip-content">
       <%- tip.content %>
     </div>
-    <p style="margin-top:1em; color: var(--muted);">Danh mục: <%= tip.category?.name || '' %> | Tags: <%= (tip.tags && tip.tags.length) ? tip.tags.map(t => t.name).join(', ') : '' %></p>
+    <p class="tip-meta">Danh mục: <%= tip.category?.name || '' %> | Tags: <%= (tip.tags && tip.tags.length) ? tip.tags.map(t => t.name).join(', ') : '' %></p>
   </div>
   <section style="margin-top:2em;">
     <h3>Bài liên quan</h3>

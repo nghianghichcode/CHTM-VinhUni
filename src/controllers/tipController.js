@@ -33,7 +33,10 @@ exports.detail = async (req, res) => {
   await tip.save();
   const related = await Tip.find({ _id: { $ne: tip._id }, category: tip.category, status: 'published' }).limit(4);
   res.render('tips/detail', {
-    tip, related, meta: getMeta({ title: tip.title, description: tip.excerpt })
+    tip,
+    related,
+    meta: getMeta({ title: tip.title, description: tip.excerpt }),
+    bodyClass: 'tip-detail-page'
   });
 };
 

@@ -1,3 +1,20 @@
+/* Dark mode relies on CSS variables from theme-tet.css */
+html.dark { color-scheme: dark; }
+
+html.dark body {
+  background: var(--bg-gradient);
+  color: var(--text);
+}
+
+html.dark input,
+html.dark textarea,
+html.dark select {
+  background: var(--surface-strong);
+  color: var(--text);
+  border-color: var(--border);
+}
+
+html.dark .nav-overlay { background: var(--drawer-overlay); }
 body,
 .site-header,
 .site-footer,
@@ -171,8 +188,7 @@ html.dark .site-header {
 .moment-card span { background: rgba(2,6,23,0.75) !important; }
 /* Keep logos unchanged across themes */
 .logo img,
-.drawer-logo,
-.site-footer img {
+.drawer-logo {
   filter: none !important;
   mix-blend-mode: normal !important;
   background: rgba(255, 255, 255, 0.94) !important;
@@ -183,6 +199,30 @@ html.dark .site-header {
   height: 44px;
   width: auto;
   object-fit: contain;
+}
+
+.site-footer img {
+  filter: none !important;
+  mix-blend-mode: normal !important;
+  background: rgba(255, 255, 255, 0.94) !important;
+  border: 1px solid rgba(255, 255, 255, 0.24) !important;
+  border-radius: 12px !important;
+  padding: 4px !important;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.28) !important;
+  height: 36px;
+  width: 36px;
+  object-fit: contain;
+}
+
+body.auth-page .logo img {
+  height: 36px;
+  padding: 3px !important;
+}
+
+body.auth-page .footer-logos img {
+  height: 30px;
+  width: 30px;
+  padding: 3px !important;
 }
 .footer-logos {
   background: rgba(255, 255, 255, 0.06) !important;
@@ -209,8 +249,8 @@ html.dark .site-header {
   background: rgba(251, 191, 36, 0.38);
   border: 1px solid rgba(251, 191, 36, 0.8);
   box-shadow: 0 8px 22px rgba(251, 191, 36, 0.45);
-  text-shadow: 0 0 1px rgba(255, 255, 255, 0.65) !important,
-    0 0 12px rgba(251, 191, 36, 0.95) !important,
+  text-shadow: 0 0 1px rgba(255, 255, 255, 0.65),
+    0 0 12px rgba(251, 191, 36, 0.95),
     0 0 26px rgba(251, 191, 36, 0.78) !important;
   font-weight: 800;
 }

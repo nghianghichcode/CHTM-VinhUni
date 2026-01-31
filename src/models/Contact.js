@@ -1,12 +1,8 @@
 const mongoose = require('mongoose');
+const SupportRequest = require('./SupportRequest');
 
 const contactSchema = new mongoose.Schema({
-  name: { type: String, required: true, trim: true },
-  email: { type: String, required: true, trim: true, lowercase: true },
-  message: { type: String, required: true, trim: true },
-  createdAt: { type: Date, default: Date.now }
+  message: { type: String, required: true, trim: true }
 });
 
-contactSchema.index({ createdAt: -1 });
-
-module.exports = mongoose.model('Contact', contactSchema);
+module.exports = SupportRequest.discriminator('Contact', contactSchema, 'contact');

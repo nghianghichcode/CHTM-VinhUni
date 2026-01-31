@@ -1,6 +1,11 @@
 // Accordion FAQ + reveal animations
 document.addEventListener('DOMContentLoaded', function() {
-  document.documentElement.classList.add('js-animate');
+  const disableReveal = document.body.classList.contains('tip-detail-page');
+  if (!disableReveal) {
+    document.documentElement.classList.add('js-animate');
+  }
+  const root = document.documentElement;
+  let stopFireworks = null;
   const typewriterTargets = Array.from(document.querySelectorAll('[data-typewriter]'));
   const runTypewriter = (list, idx = 0) => {
     if (idx >= list.length) return;
@@ -104,10 +109,6 @@ document.addEventListener('DOMContentLoaded', function() {
   };
 
   if (typewriterTargets.length) {
-    typewriterTargets.forEach(el => {
-      el.textContent = '';
-    });
-
     const immediateTargets = typewriterTargets.filter(el => {
       return ['hero-title', 'hero-desc'].includes(el.getAttribute('data-typewriter'));
     });
@@ -232,6 +233,187 @@ document.addEventListener('DOMContentLoaded', function() {
   if (tempEl) {
     fetchTemperature(18.6734, 105.6923);
   }
+
+  const initTetExtras = () => {
+    const greetingEl = document.getElementById('tet-greeting');
+    const greetings = [
+      'Đón Tết an tâm – Máy tính khỏe – Học tập và làm việc suôn sẻ.',
+      'Khởi đầu năm mới với hệ thống ổn định và dữ liệu an toàn.',
+      'Tết vui trọn vẹn khi máy khỏe và mọi thứ vận hành mượt mà.',
+      'An toàn số – dữ liệu sạch – khởi sắc năm mới.',
+      'Máy khỏe – Tết vui – học tập và làm việc không gián đoạn.'
+    ];
+    if (greetingEl) {
+      greetingEl.textContent = greetings[Math.floor(Math.random() * greetings.length)];
+    }
+
+    const countdownEls = {
+      days: document.getElementById('cd-days'),
+      hours: document.getElementById('cd-hours'),
+      minutes: document.getElementById('cd-minutes'),
+      seconds: document.getElementById('cd-seconds')
+    };
+    const targetDate = new Date('2026-02-16T23:59:59+07:00');
+    const updateCountdown = () => {
+      if (!countdownEls.days) return;
+      const now = new Date();
+      const diff = Math.max(0, targetDate.getTime() - now.getTime());
+      const totalSeconds = Math.floor(diff / 1000);
+      const days = Math.floor(totalSeconds / 86400);
+      const hours = Math.floor((totalSeconds % 86400) / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      const seconds = totalSeconds % 60;
+      countdownEls.days.textContent = String(days).padStart(2, '0');
+      countdownEls.hours.textContent = String(hours).padStart(2, '0');
+      countdownEls.minutes.textContent = String(minutes).padStart(2, '0');
+      countdownEls.seconds.textContent = String(seconds).padStart(2, '0');
+    };
+    updateCountdown();
+    if (countdownEls.days) setInterval(updateCountdown, 1000);
+
+    const deviceEls = {
+      type: document.getElementById('device-type'),
+      os: document.getElementById('device-os'),
+      browser: document.getElementById('device-browser'),
+      grid: document.getElementById('device-grid'),
+      advOpen: document.getElementById('advanced-scan-open')
+    };
+
+    if (Object.values(deviceEls).some(Boolean)) {
+      const getProfile = async () => {
+        const ua = navigator.userAgent || '';
+        const platform = navigator.userAgentData?.platform || navigator.platform || '';
+
+        let os = 'Không rõ';
+        if (/Windows NT 10\.0/i.test(ua)) os = 'Windows 10/11';
+        else if (/Windows NT 6\.3/i.test(ua)) os = 'Windows 8.1';
+        else if (/Windows NT 6\.2/i.test(ua)) os = 'Windows 8';
+        else if (/Windows NT 6\.1/i.test(ua)) os = 'Windows 7';
+        else if (/Android/i.test(ua)) os = 'Android';
+        else if (/iPhone|iPad|iPod/i.test(ua)) os = 'iOS/iPadOS';
+        else if (/Mac OS X/i.test(ua) || /Mac/i.test(platform)) os = 'macOS';
+        else if (/Linux/i.test(ua) || /Linux/i.test(platform)) os = 'Linux';
+
+        let browser = 'Không rõ';
+        let browserVersion = '';
+
+        const brandList = navigator.userAgentData?.brands || navigator.userAgentData?.uaList || [];
+        const brandMap = [
+          { key: 'CocCoc', name: 'Cốc Cốc' },
+          { key: 'Microsoft Edge', name: 'Edge' },
+          { key: 'Opera', name: 'Opera' },
+          { key: 'Samsung Browser', name: 'Samsung Internet' },
+          { key: 'Firefox', name: 'Firefox' },
+          { key: 'Safari', name: 'Safari' },
+          { key: 'Google Chrome', name: 'Chrome' },
+          { key: 'Chromium', name: 'Chromium' }
+        ];
+
+        for (const brand of brandMap) {
+          const found = brandList.find(item => (item.brand || '').includes(brand.key));
+          if (found) {
+            browser = brand.name;
+            browserVersion = found.version || '';
+            break;
+          }
+        }
+
+        const uaLower = ua.toLowerCase();
+        if (browser === 'Không rõ') {
+          if (/CocCoc\//i.test(ua) || /coc_coc_browser/i.test(ua) || /coccoc/i.test(uaLower)) browser = 'Cốc Cốc';
+          else if (/Edg\//i.test(ua)) browser = 'Edge';
+          else if (/OPR\//i.test(ua)) browser = 'Opera';
+          else if (/SamsungBrowser\//i.test(ua)) browser = 'Samsung Internet';
+          else if (/UCBrowser\//i.test(ua)) browser = 'UC Browser';
+          else if (/MiuiBrowser\//i.test(ua)) browser = 'Mi Browser';
+          else if (/HUAWEI\//i.test(ua)) browser = 'Huawei Browser';
+          else if (/Firefox\//i.test(ua)) browser = 'Firefox';
+          else if (/Chrome\//i.test(ua) && !/Edg\//i.test(ua) && !/OPR\//i.test(ua)) browser = 'Chrome';
+          else if (/Safari\//i.test(ua) && !/Chrome\//i.test(ua)) browser = 'Safari';
+
+          const verMatch =
+            ua.match(/CocCoc\/([\d.]+)/) ||
+            ua.match(/coc_coc_browser\/([\d.]+)/i) ||
+            ua.match(/Edg\/([\d.]+)/) ||
+            ua.match(/OPR\/([\d.]+)/) ||
+            ua.match(/SamsungBrowser\/([\d.]+)/) ||
+            ua.match(/UCBrowser\/([\d.]+)/) ||
+            ua.match(/MiuiBrowser\/([\d.]+)/) ||
+            ua.match(/HUAWEI\/([\d.]+)/) ||
+            ua.match(/Chrome\/([\d.]+)/) ||
+            ua.match(/Firefox\/([\d.]+)/) ||
+            ua.match(/Version\/([\d.]+).*Safari/);
+          if (verMatch) browserVersion = verMatch[1];
+        }
+
+        if (navigator.userAgentData?.getHighEntropyValues) {
+          try {
+            const he = await navigator.userAgentData.getHighEntropyValues([
+              'platform', 'platformVersion', 'architecture', 'model', 'uaFullVersion', 'bitness', 'wow64'
+            ]);
+            if (he?.platform) {
+              if (he.platform === 'Windows' && he.platformVersion) {
+                const major = parseInt(String(he.platformVersion).split('.')[0], 10);
+                os = Number.isFinite(major) && major >= 13 ? 'Windows 11' : 'Windows 10';
+              } else {
+                os = he.platform + (he.platformVersion ? ` ${he.platformVersion}` : '');
+              }
+            }
+          } catch {}
+        }
+
+        const deviceType = /Mobi|Android|iPhone|iPod/i.test(ua)
+          ? 'Điện thoại'
+          : (/iPad|Tablet/i.test(ua) ? 'Máy tính bảng' : 'Máy tính');
+
+        return {
+          type: deviceType,
+          os,
+          browser: browserVersion ? `${browser} ${browserVersion}` : browser
+        };
+      };
+
+      const applyProfile = (profile) => {
+        if (deviceEls.type) deviceEls.type.textContent = profile.type;
+        if (deviceEls.os) deviceEls.os.textContent = profile.os;
+        if (deviceEls.browser) deviceEls.browser.textContent = profile.browser;
+      };
+
+      const loadAndShow = async () => {
+        const profile = await getProfile();
+        applyProfile(profile);
+      };
+      loadAndShow();
+    }
+
+    const luckyBtn = document.getElementById('lucky-btn');
+    const luckyResult = document.getElementById('lucky-result');
+    if (luckyBtn && luckyResult) {
+      const tips = [
+        'Mẹo: Dọn file tạm bằng Disk Cleanup để giải phóng dung lượng.',
+        'Mẹo: Gỡ app không dùng để tăng tốc khởi động.',
+        'Mẹo: Cập nhật Windows để vá lỗi bảo mật trước Tết.'
+      ];
+      const shortcuts = [
+        'Shortcut: Win + V mở lịch sử clipboard.',
+        'Shortcut: Win + Shift + S chụp màn hình nhanh.',
+        'Shortcut: Ctrl + Shift + Esc mở Task Manager.'
+      ];
+      const wishes = [
+        'Chúc năm mới an khang, dữ liệu an toàn, công việc suôn sẻ.',
+        'Chúc Tết vui khỏe, máy tính chạy mượt cả năm.',
+        'Chúc bạn một năm mới bình an và sáng tạo không giới hạn.'
+      ];
+      luckyBtn.addEventListener('click', () => {
+        const pool = [tips, shortcuts, wishes];
+        const pick = pool[Math.floor(Math.random() * pool.length)];
+        const item = pick[Math.floor(Math.random() * pick.length)];
+        luckyResult.textContent = item;
+      });
+    }
+
+    // Tet effects always on in light/dark modes; no toggle.
+  };
   document.querySelectorAll('.accordion-title').forEach(btn => {
     btn.onclick = function() {
       const item = btn.closest('.accordion-item');
@@ -240,32 +422,34 @@ document.addEventListener('DOMContentLoaded', function() {
     };
   });
 
-  const revealTargets = document.querySelectorAll(
-    '.hero-content, .section-head, .card, .info-card, .stat-card, .highlight-card, .moment-card, .intro-panel, .accordion, .steps li, .tags a'
-  );
+  if (!disableReveal) {
+    const revealTargets = document.querySelectorAll(
+      '.hero-content, .section-head, .card, .info-card, .stat-card, .highlight-card, .moment-card, .intro-panel, .accordion, .steps li, .tags a'
+    );
 
-  const swipeTargets = document.querySelectorAll(
-    'h1, h2, h3, .section-head p, .hero-content p, .intro-panel p'
-  );
+    const swipeTargets = document.querySelectorAll(
+      'h1, h2, h3, .section-head p, .hero-content p, .intro-panel p'
+    );
 
-  revealTargets.forEach(el => el.classList.add('reveal'));
-  swipeTargets.forEach(el => el.classList.add('swipe-in'));
+    revealTargets.forEach(el => el.classList.add('reveal'));
+    swipeTargets.forEach(el => el.classList.add('swipe-in'));
 
-  if ('IntersectionObserver' in window) {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('in-view');
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.15 });
+    if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('in-view');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.15 });
 
-    revealTargets.forEach(el => observer.observe(el));
-    swipeTargets.forEach(el => observer.observe(el));
-  } else {
-    revealTargets.forEach(el => el.classList.add('in-view'));
-    swipeTargets.forEach(el => el.classList.add('in-view'));
+      revealTargets.forEach(el => observer.observe(el));
+      swipeTargets.forEach(el => observer.observe(el));
+    } else {
+      revealTargets.forEach(el => el.classList.add('in-view'));
+      swipeTargets.forEach(el => el.classList.add('in-view'));
+    }
   }
 
   // Moments slider
@@ -395,7 +579,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
   const initFireworks = () => {
     const canvas = document.getElementById('fireworks-canvas');
-    if (!canvas) return;
+    const hero = document.querySelector('.hero');
+    if (!canvas || !hero) return;
     if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
     const ctx = canvas.getContext('2d');
@@ -403,43 +588,37 @@ document.addEventListener('DOMContentLoaded', function() {
 
     let width = 0;
     let height = 0;
-    let particles = [];
+    let dpr = 1;
+    let running = false;
+    let rafId = 0;
+    let stopTimer = 0;
     let fireworks = [];
+    let particles = [];
+
+    const maxParticles = 180;
+    const maxFireworks = 4;
 
     const resize = () => {
-      width = canvas.width = window.innerWidth;
-      height = canvas.height = window.innerHeight;
+      const rect = hero.getBoundingClientRect();
+      width = Math.max(1, rect.width);
+      height = Math.max(1, rect.height);
+      dpr = Math.min(2, window.devicePixelRatio || 1);
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+      canvas.style.width = `${width}px`;
+      canvas.style.height = `${height}px`;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     };
 
-    window.addEventListener('resize', resize);
-    resize();
-
-    const randomColor = () => {
-      // Broad palette (gold, red, teal, blue, magenta, lime, violet, white)
-      const palette = [
-        [45, 92, 62],   // gold
-        [10, 90, 60],   // red-orange
-        [205, 85, 62],  // blue
-        [310, 90, 66],  // magenta
-        [160, 80, 60],  // teal
-        [125, 82, 60],  // lime
-        [270, 86, 64],  // violet
-        [55, 94, 70],   // soft yellow
-      ];
-      const pick = palette[Math.floor(Math.random() * palette.length)];
-      // Small random jitter for natural variation
-      const hue = pick[0] + (Math.random() - 0.5) * 10;
-      const sat = Math.min(100, Math.max(78, pick[1] + (Math.random() - 0.5) * 8));
-      const light = Math.min(78, Math.max(52, pick[2] + (Math.random() - 0.5) * 10));
-      return `hsl(${hue}, ${sat}%, ${light}%)`;
-    };
+    const palette = ['#C81D25', '#F4C430', '#F59E0B', '#3B82F6', '#ffffff'];
+    const randomColor = () => palette[Math.floor(Math.random() * palette.length)];
 
     class Firework {
       constructor() {
-        this.x = (0.12 + Math.random() * 0.76) * width; // avoid edges so bursts are visible
-        this.y = height * 0.9 + 20;
-        this.targetY = height * (0.08 + Math.random() * 0.16); // burst near top area
-        this.speed = 2.2 + Math.random() * 1.8;
+        this.x = (0.15 + Math.random() * 0.7) * width;
+        this.y = height + 10;
+        this.targetY = height * (0.1 + Math.random() * 0.2);
+        this.speed = 2.2 + Math.random() * 1.6;
         this.color = randomColor();
         this.exploded = false;
       }
@@ -462,17 +641,17 @@ document.addEventListener('DOMContentLoaded', function() {
       constructor(x, y, color) {
         this.x = x;
         this.y = y;
-        this.vx = (Math.random() - 0.5) * 4.6;
-        this.vy = (Math.random() - 0.6) * 4.6;
-        this.alpha = 1.08;
-        this.decay = 0.009 + Math.random() * 0.016;
+        this.vx = (Math.random() - 0.5) * 4;
+        this.vy = (Math.random() - 0.6) * 4;
+        this.alpha = 1;
+        this.decay = 0.012 + Math.random() * 0.014;
         this.color = color;
-        this.size = 2.4 + Math.random() * 0.9;
+        this.size = 2 + Math.random() * 0.8;
       }
       update() {
         this.x += this.vx;
         this.y += this.vy;
-        this.vy += 0.02;
+        this.vy += 0.03;
         this.alpha -= this.decay;
       }
       draw() {
@@ -481,7 +660,7 @@ document.addEventListener('DOMContentLoaded', function() {
         ctx.globalAlpha = this.alpha;
         ctx.fillStyle = this.color;
         ctx.shadowColor = this.color;
-        ctx.shadowBlur = 16;
+        ctx.shadowBlur = 12;
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
         ctx.fill();
@@ -490,38 +669,140 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     const explode = (x, y, color) => {
-      const count = 34 + Math.floor(Math.random() * 22);
+      const count = 26 + Math.floor(Math.random() * 18);
       for (let i = 0; i < count; i += 1) {
         particles.push(new Particle(x, y, color));
+      }
+      if (particles.length > maxParticles) {
+        particles = particles.slice(-maxParticles);
       }
     };
 
     const loop = () => {
+      if (!running) return;
       ctx.clearRect(0, 0, width, height);
 
-      if (Math.random() < 0.02) {
+      if (Math.random() < 0.03 && fireworks.length < maxFireworks) {
         fireworks.push(new Firework());
       }
 
       fireworks.forEach(fw => fw.update());
       fireworks = fireworks.filter(fw => !fw.exploded);
-      fireworks.forEach(fw => {
-        ctx.save();
-        ctx.shadowColor = fw.color;
-        ctx.shadowBlur = 12;
-        fw.draw();
-        ctx.restore();
-      });
+      fireworks.forEach(fw => fw.draw());
 
       particles.forEach(p => p.update());
-      particles = particles.filter(p => p.alpha > 0);
+      particles = particles.filter(p => p.alpha > 0.02);
       particles.forEach(p => p.draw());
 
-      requestAnimationFrame(loop);
+      rafId = requestAnimationFrame(loop);
     };
 
-    loop();
+    const stop = () => {
+      running = false;
+      fireworks = [];
+      particles = [];
+      if (rafId) cancelAnimationFrame(rafId);
+      if (stopTimer) clearTimeout(stopTimer);
+      ctx.clearRect(0, 0, width, height);
+    };
+
+    const start = (duration = 7200) => {
+      resize();
+      if (running) return;
+      running = true;
+      loop();
+      stopTimer = setTimeout(stop, duration);
+    };
+
+    stopFireworks = stop;
+
+    const buttons = document.querySelectorAll('[data-fireworks-trigger]');
+    buttons.forEach(btn => btn.addEventListener('click', () => start(7600)));
+
+    if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            start(6800);
+            observer.disconnect();
+          }
+        });
+      }, { threshold: 0.4 });
+      observer.observe(hero);
+    }
+
+    window.addEventListener('resize', resize);
   };
 
+  initTetExtras();
   initFireworks();
+
+  // Tip image viewer (lightbox)
+  const initImageViewer = () => {
+    const selector = '.tip-content img, .tip-detail-thumb';
+    let viewer = document.querySelector('.image-viewer');
+    let viewerImg = null;
+    let lastFocus = null;
+
+    const ensureViewer = () => {
+      if (viewer) return;
+      viewer = document.createElement('div');
+      viewer.className = 'image-viewer';
+      viewer.setAttribute('role', 'dialog');
+      viewer.setAttribute('aria-modal', 'true');
+      viewer.setAttribute('aria-hidden', 'true');
+
+      const backdrop = document.createElement('div');
+      backdrop.className = 'image-viewer-backdrop';
+      viewerImg = document.createElement('img');
+      viewerImg.className = 'image-viewer-img';
+      const closeBtn = document.createElement('button');
+      closeBtn.className = 'image-viewer-close';
+      closeBtn.type = 'button';
+      closeBtn.setAttribute('aria-label', 'Đóng ảnh');
+      closeBtn.textContent = '×';
+
+      viewer.appendChild(backdrop);
+      viewer.appendChild(viewerImg);
+      viewer.appendChild(closeBtn);
+      document.body.appendChild(viewer);
+
+      const close = () => {
+        viewer.classList.remove('open');
+        viewer.setAttribute('aria-hidden', 'true');
+        document.body.classList.remove('image-viewer-open');
+        if (lastFocus) lastFocus.focus();
+      };
+
+      backdrop.addEventListener('click', close);
+      closeBtn.addEventListener('click', close);
+      viewer.addEventListener('click', (e) => {
+        if (e.target === viewer) close();
+      });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && viewer.classList.contains('open')) close();
+      });
+    };
+
+    const open = (img) => {
+      ensureViewer();
+      lastFocus = document.activeElement;
+      const src = img.getAttribute('data-full') || img.currentSrc || img.src;
+      viewerImg.src = src;
+      viewerImg.alt = img.alt || 'Ảnh minh họa';
+      viewer.classList.add('open');
+      viewer.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('image-viewer-open');
+      viewerImg.focus?.();
+    };
+
+    document.addEventListener('click', (e) => {
+      const targetImg = e.target.closest(selector);
+      if (!targetImg) return;
+      e.preventDefault();
+      open(targetImg);
+    });
+  };
+
+  initImageViewer();
 });

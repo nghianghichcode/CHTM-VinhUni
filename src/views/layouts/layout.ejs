@@ -10,14 +10,23 @@
   <meta property="og:image" content="<%= meta?.image || '/images/og-default.png' %>">
   <meta property="og:url" content="<%= meta?.url || '' %>">
   <link rel="icon" href="/images/logo_transparent.png" type="image/png">
-  <link rel="stylesheet" href="/css/main.css">
-  <link rel="stylesheet" href="/css/dark.css" id="dark-css" disabled>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
   <script src="/js/dark-init.js"></script>
+  <link rel="stylesheet" href="/css/main.css?v=20260131-1">
+  <link rel="stylesheet" href="/css/theme-tet.css?v=20260131-1">
+  <link rel="stylesheet" href="/css/dark.css?v=20260131-1" id="dark-css" disabled>
   <script src="/js/darkmode.js" defer></script>
-  <script src="/js/main.js" defer></script>
+  <script src="/js/main.js?v=20260131-1" defer></script>
+  <script src="/js/lanterns.js" defer></script>
+  <script src="/js/fireworks.js" defer></script>
 </head>
-<body class="<%= bodyClass || '' %>">
-  <canvas id="fireworks-canvas" aria-hidden="true"></canvas>
+<body class="<%= (bodyClass || '') + ' tet-page' %>">
+  <div id="tet-lantern-layer" class="tet-2026-lantern-layer" aria-hidden="true"></div>
+  <% if (!(bodyClass || '').includes('auth-page')) { %>
+    <canvas id="tet-fireworks-canvas" class="tet-2026-fireworks-canvas" aria-hidden="true"></canvas>
+  <% } %>
   <%- include('../partials/header') %>
   <main>
     <%- include('../partials/flash') %>
@@ -25,4 +34,3 @@
   </main>
   <%- include('../partials/footer') %>
 </body>
-</html>
