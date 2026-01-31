@@ -10,7 +10,7 @@ const Tip = require('../src/models/Tip');
 const Ticket = require('../src/models/Ticket');
 const Contact = require('../src/models/Contact');
 
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/cong-thu-thuat';
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:3000/cong-thu-thuat';
 
 const categories = [
   "Windows",
