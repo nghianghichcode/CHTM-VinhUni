@@ -26,6 +26,10 @@ npm install
 cp .env.example .env
 ```
 - Sửa `MONGODB_URI` nếu dùng MongoDB Atlas.
+- Nếu mật khẩu có ký tự đặc biệt, hãy dùng bộ biến `MONGODB_HOST/MONGODB_DB/MONGODB_USER/MONGODB_PASS` để tự động URL-encode.
+- Nếu báo lỗi xác thực, kiểm tra:
+	- User/password đúng và user có quyền readWrite trên DB.
+	- Network Access của Atlas cho phép IP hiện tại (hoặc 0.0.0.0/0 khi dev).
 
 ### 3. Seed dữ liệu mẫu
 

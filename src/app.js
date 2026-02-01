@@ -18,6 +18,7 @@ const app = express();
 
 // DB connect
 const connectDB = require('./config/db');
+const { getMongoUri } = require('./config/mongoUri');
 connectDB().catch(err => {
   console.error('MongoDB connect failed:', err);
 });
@@ -60,9 +61,10 @@ const sessionOptions = {
   saveUninitialized: false,
   cookie: { maxAge: 1000 * 60 * 60 * 24 }
 };
-if (process.env.MONGODB_URI) {
+const mongoUri = getMongoUri();
+if (mongoUri) {
   sessionOptions.store = MongoStore.create({
-    mongoUrl: process.env.MONGODB_URI,
+    mongoUrl: mongoUri,
     collectionName: 'sessions'
   });
 }

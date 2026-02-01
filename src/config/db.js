@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { getMongoUri } = require('./mongoUri');
 
 mongoose.set('bufferCommands', false);
 
@@ -8,14 +9,15 @@ if (!cached) {
 }
 
 module.exports = async function connectDB() {
-  if (!process.env.MONGODB_URI) {
-    console.warn('MONGODB_URI is not set. Skipping MongoDB connection.');
+  const mongoUri = getMongoUri();
+  if (!mongoUri) {
+    console.warn('MONGODB_URI is not set or uses placeholders. Skipping MongoDB connection.');
     return null;
   }
   if (cached.conn) return cached.conn;
 
   if (!cached.promise) {
-    cached.promise = mongoose.connect(process.env.MONGODB_URI, {
+    cached.promise = mongoose.connect(mongoUri, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
       serverSelectionTimeoutMS: 8000

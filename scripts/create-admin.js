@@ -3,7 +3,9 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const User = require('../src/models/User');
 
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/cong-thu-thuat';
+const { getMongoUri } = require('../src/config/mongoUri');
+
+const MONGODB_URI = getMongoUri() || 'mongodb://localhost:27017/doi-chmt';
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 const ADMIN_NAME = process.env.ADMIN_NAME || 'Admin';
