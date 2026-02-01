@@ -13,7 +13,8 @@ exports.loginForm = (req, res) => {
 
 exports.login = async (req, res) => {
   const { email, password } = req.body;
-  const user = await User.findOne({ email, role: 'admin' });
+  const emailNormalized = (email || '').trim().toLowerCase();
+  const user = await User.findOne({ email: emailNormalized, role: 'admin' });
   if (!user || !(await require('bcrypt').compare(password, user.passwordHash))) {
     req.flash('error', 'Sai thông tin admin');
     return res.redirect('/admin/login');
