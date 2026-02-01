@@ -10,7 +10,9 @@ const Tip = require('../src/models/Tip');
 const Ticket = require('../src/models/Ticket');
 const Contact = require('../src/models/Contact');
 
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://<redacted>';
+const { getMongoUri } = require('../src/config/mongoUri');
+
+const MONGODB_URI = getMongoUri() || 'mongodb://<redacted>';
 
 const categories = [
   "Windows",
