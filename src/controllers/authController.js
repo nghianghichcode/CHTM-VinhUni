@@ -7,6 +7,8 @@ const { sendOtpEmail } = require('../utils/mailer');
 
 const OTP_TTL_MINUTES = Number(process.env.OTP_TTL_MINUTES || 10);
 const OTP_MAX_ATTEMPTS = Number(process.env.OTP_MAX_ATTEMPTS || 5);
+const LOGIN_MAX_ATTEMPTS = Number(process.env.LOGIN_MAX_ATTEMPTS || 5);
+const LOGIN_LOCK_MINUTES = Number(process.env.LOGIN_LOCK_MINUTES || 10);
 
 function maskEmail(email = '') {
   const [name, domain] = email.split('@');
@@ -30,10 +32,42 @@ exports.loginForm = (req, res) => {
 
 exports.login = async (req, res) => {
   const { email, password } = req.body;
-  const user = await User.findOne({ email });
-  if (!user || !(await bcrypt.compare(password, user.passwordHash))) {
+  const emailNormalized = (email || '').trim().toLowerCase();
+  const user = await User.findOne({ email: emailNormalized });
+
+  if (user?.loginLockUntil && user.loginLockUntil.getTime() > Date.now()) {
+    const remainingMs = user.loginLockUntil.getTime() - Date.now();
+    const remainingMinutes = Math.max(1, Math.ceil(remainingMs / 60000));
+    req.flash('error', `Tài khoản tạm bị khóa. Vui lòng thử lại sau ${remainingMinutes} phút.`);
+    return res.redirect('/auth/login');
+  }
+
+  const isPasswordValid = user && await bcrypt.compare(password, user.passwordHash);
+  if (!isPasswordValid) {
+    if (user) {
+      const nextAttempts = (user.loginAttempts || 0) + 1;
+      if (nextAttempts >= LOGIN_MAX_ATTEMPTS) {
+        user.loginAttempts = 0;
+        user.loginLockUntil = new Date(Date.now() + LOGIN_LOCK_MINUTES * 60 * 1000);
+        await user.save();
+        req.flash('error', `Bạn đã nhập sai quá ${LOGIN_MAX_ATTEMPTS} lần. Tài khoản bị khóa ${LOGIN_LOCK_MINUTES} phút.`);
+        return res.redirect('/auth/login');
+      }
+      user.loginAttempts = nextAttempts;
+      user.loginLockUntil = null;
+      await user.save();
+      const remaining = LOGIN_MAX_ATTEMPTS - nextAttempts;
+      req.flash('error', `Sai email hoặc mật khẩu. Bạn còn ${remaining} lần thử.`);
+      return res.redirect('/auth/login');
+    }
     req.flash('error', 'Sai email hoặc mật khẩu');
     return res.redirect('/auth/login');
+  }
+
+  if (user.loginAttempts || user.loginLockUntil) {
+    user.loginAttempts = 0;
+    user.loginLockUntil = null;
+    await user.save();
   }
   req.session.user = {
     _id: user._id,
@@ -82,9 +116,17 @@ exports.register = async (req, res) => {
   try {
     await sendOtpEmail({ to: emailNormalized, code: otp, purpose: 'register', expiresAt });
     req.flash('success', 'Đã gửi mã OTP đến email. Vui lòng kiểm tra hộp thư.');
-    return res.redirect('/auth/verify-otp?purpose=register');
+    return res.render('auth/verify-otp', {
+      bodyClass: 'auth-page',
+      purpose: 'register',
+      emailMasked: maskEmail(emailNormalized),
+      emailValue: ''
+    });
   } catch (err) {
-    console.error('Send OTP failed:', err.message);
+    console.error('Send OTP failed:', err?.message || err);
+    if (err?.code || err?.response) {
+      console.error('Send OTP details:', { code: err.code, response: err.response });
+    }
     req.flash('error', 'Không thể gửi email OTP. Vui lòng thử lại sau.');
     return res.redirect('/auth/register');
   }
@@ -103,6 +145,7 @@ exports.forgot = async (req, res) => {
   }
 
   const user = await User.findOne({ email: emailNormalized });
+  let sendFailed = false;
   if (user) {
     const otp = generateOtp();
     const expiresAt = new Date(Date.now() + OTP_TTL_MINUTES * 60 * 1000);
@@ -117,15 +160,21 @@ exports.forgot = async (req, res) => {
     try {
       await sendOtpEmail({ to: emailNormalized, code: otp, purpose: 'reset', expiresAt });
     } catch (err) {
-      console.error('Send OTP failed:', err.message);
-      req.flash('error', 'Không thể gửi email OTP. Vui lòng thử lại sau.');
-      return res.redirect('/auth/forgot');
+      console.error('Send OTP failed:', err?.message || err);
+      if (err?.code || err?.response) {
+        console.error('Send OTP details:', { code: err.code, response: err.response });
+      }
+      sendFailed = true;
     }
   }
 
   req.session.resetEmail = emailNormalized;
-  req.flash('success', 'Đã gửi mã OTP về mail, vui lòng kiểm tra.');
-  res.redirect('/auth/verify-otp?purpose=reset');
+  if (sendFailed) {
+    req.flash('error', 'Không thể gửi email OTP. Vui lòng thử lại sau.');
+  } else {
+    req.flash('success', 'Đã gửi mã OTP về mail, vui lòng kiểm tra.');
+  }
+  return res.redirect(`/auth/verify-otp?purpose=reset&email=${encodeURIComponent(emailNormalized)}`);
 };
 
 exports.resendOtp = async (req, res) => {
@@ -134,13 +183,18 @@ exports.resendOtp = async (req, res) => {
     return res.redirect('/auth/login');
   }
 
+  const emailFromQuery = (req.query.email || '').trim().toLowerCase();
   const email = purpose === 'register'
     ? req.session.pendingRegister?.email
-    : req.session.resetEmail;
+    : req.session.resetEmail || emailFromQuery;
 
   if (!email) {
     req.flash('error', 'Phiên làm việc đã hết hạn. Vui lòng thực hiện lại.');
     return res.redirect(purpose === 'register' ? '/auth/register' : '/auth/forgot');
+  }
+
+  if (purpose === 'reset' && !req.session.resetEmail && emailFromQuery) {
+    req.session.resetEmail = emailFromQuery;
   }
 
   const emailNormalized = email.trim().toLowerCase();
@@ -167,7 +221,10 @@ exports.resendOtp = async (req, res) => {
     req.flash('success', 'Đã gửi mã OTP về mail, vui lòng kiểm tra.');
     return res.redirect(`/auth/verify-otp?purpose=${purpose}`);
   } catch (err) {
-    console.error('Send OTP failed:', err.message);
+    console.error('Send OTP failed:', err?.message || err);
+    if (err?.code || err?.response) {
+      console.error('Send OTP details:', { code: err.code, response: err.response });
+    }
     req.flash('error', 'Không thể gửi email OTP. Vui lòng thử lại sau.');
     return res.redirect(`/auth/verify-otp?purpose=${purpose}`);
   }
@@ -178,9 +235,10 @@ exports.verifyOtpForm = (req, res) => {
   if (!['register', 'reset'].includes(purpose)) {
     return res.redirect('/auth/login');
   }
+  const emailFromBody = (req.body.email || '').trim().toLowerCase();
   const email = purpose === 'register'
     ? req.session.pendingRegister?.email
-    : req.session.resetEmail;
+    : req.session.resetEmail || emailFromBody;
 
   if (!email) {
     req.flash('error', 'Phiên làm việc đã hết hạn. Vui lòng thực hiện lại.');
@@ -190,7 +248,8 @@ exports.verifyOtpForm = (req, res) => {
   res.render('auth/verify-otp', {
     bodyClass: 'auth-page',
     purpose,
-    emailMasked: maskEmail(email)
+    emailMasked: maskEmail(email),
+    emailValue: purpose === 'reset' ? email : ''
   });
 };
 
@@ -252,6 +311,9 @@ exports.verifyOtp = async (req, res) => {
     return res.redirect('/');
   }
 
+  if (!req.session.resetEmail && purpose === 'reset' && email) {
+    req.session.resetEmail = email;
+  }
   req.session.resetVerified = true;
   req.flash('success', 'Xác thực OTP thành công. Vui lòng đặt lại mật khẩu.');
   return res.redirect('/auth/reset-password');
@@ -273,6 +335,15 @@ exports.resetPassword = async (req, res) => {
   }
   if (!minLength(password, 6)) {
     req.flash('error', 'Mật khẩu tối thiểu 6 ký tự.');
+    return res.redirect('/auth/reset-password');
+  }
+  const user = await User.findOne({ email: req.session.resetEmail }).select('passwordHash');
+  if (!user) {
+    req.flash('error', 'Tài khoản không tồn tại. Vui lòng thực hiện lại.');
+    return res.redirect('/auth/forgot');
+  }
+  if (await bcrypt.compare(password, user.passwordHash)) {
+    req.flash('error', 'Mật khẩu mới phải khác mật khẩu hiện tại.');
     return res.redirect('/auth/reset-password');
   }
   const passwordHash = await bcrypt.hash(password, 10);

@@ -25,6 +25,9 @@
 
         <form method="post" action="/auth/verify-otp" class="auth-form">
           <input type="hidden" name="purpose" value="<%= purpose %>">
+          <% if (purpose === 'reset' && emailValue) { %>
+            <input type="hidden" name="email" value="<%= emailValue %>">
+          <% } %>
           <div class="form-group">
             <label for="otp">Mã OTP</label>
             <input type="text" id="otp" name="otp" placeholder="123456" inputmode="numeric" maxlength="6" required>
@@ -36,8 +39,10 @@
         <div class="auth-footer">
           <% if (purpose === 'register') { %>
             <p>Chưa nhận được mã? <a href="/auth/resend-otp?purpose=register" class="link-tet">Gửi lại OTP</a></p>
+            <p><a href="/auth/register" class="link-tet">Quay lại</a></p>
           <% } else { %>
             <p>Chưa nhận được mã? <a href="/auth/resend-otp?purpose=reset" class="link-tet">Gửi lại OTP</a></p>
+            <p><a href="/auth/forgot" class="link-tet">Quay lại</a></p>
           <% } %>
         </div>
       </div>
