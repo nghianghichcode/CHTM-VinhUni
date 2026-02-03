@@ -8,7 +8,9 @@ const Ticket = require('../models/Ticket');
 const User = require('../models/User');
 const { getMeta } = require('../utils/meta');
 
-const uploadDir = path.join(__dirname, '../../public/uploads/avatars');
+const uploadDir = process.env.VERCEL
+  ? path.join('/tmp', 'uploads', 'avatars')
+  : path.join(__dirname, '../../public/uploads/avatars');
 fs.mkdirSync(uploadDir, { recursive: true });
 
 const storage = multer.diskStorage({

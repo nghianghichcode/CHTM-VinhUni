@@ -43,6 +43,9 @@ app.use(morgan('dev'));
 
 // Static (phá»¥c vá»¥ public ngoÃ i src)
 app.use(express.static(path.join(__dirname, '../public')));
+if (process.env.VERCEL) {
+  app.use('/uploads', express.static('/tmp/uploads'));
+}
 
 // EJS
 app.set('view engine', 'ejs');
