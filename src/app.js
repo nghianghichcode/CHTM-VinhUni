@@ -129,26 +129,25 @@ app.use(async (req, res, next) => {
     return res.status(503).json({ message: 'Database is not ready.' });
   }
 
-  try {
-    if (!guardLogState.target) {
-      console.log('MongoDB guard target:', getMongoTarget(mongoUri));
-      guardLogState.target = true;
-    }
-    if (!guardLogState.ready) {
-      console.warn('MongoDB guard: readyState before connect:', mongoose.connection.readyState);
-      guardLogState.ready = true;
-    }
-    await connectDB();
-    if (mongoose.connection.readyState === 1) {
-      guardLogState.nextAttemptAt = 0;
-      return next();
-    }
-  } catch (err) {
-    console.error('MongoDB connect failed (guard):', err);
+  if (!guardLogState.target) {
+    console.log('MongoDB guard target:', getMongoTarget(mongoUri));
+    guardLogState.target = true;
+  }
+  if (!guardLogState.ready) {
+    console.warn('MongoDB guard: readyState before connect:', mongoose.connection.readyState);
+    guardLogState.ready = true;
   }
   if (MONGO_GUARD_RETRY_DELAY_MS > 0) {
     guardLogState.nextAttemptAt = now + MONGO_GUARD_RETRY_DELAY_MS;
   }
+
+  connectDB().then(() => {
+    if (mongoose.connection.readyState === 1) {
+      guardLogState.nextAttemptAt = 0;
+    }
+  }).catch(err => {
+    console.error('MongoDB connect failed (guard):', err);
+  });
 
   if (req.accepts('html')) {
     return res.status(503).render('error/503', {
@@ -181,18 +180,11 @@ if (mongoUri) {
     socketTimeoutMS: Number(process.env.MONGODB_SOCKET_TIMEOUT_MS || defaultTimeout)
   };
   try {
-    if (typeof mongoose.connection?.getClient === 'function') {
-      sessionOptions.store = MongoStore.create({
-        clientPromise: mongoose.connection.asPromise().then(conn => conn.getClient()),
-        collectionName: 'sessions'
-      });
-    } else {
-      sessionOptions.store = MongoStore.create({
-        mongoUrl: mongoUri,
-        mongoOptions,
-        collectionName: 'sessions'
-      });
-    }
+    sessionOptions.store = MongoStore.create({
+      mongoUrl: mongoUri,
+      mongoOptions,
+      collectionName: 'sessions'
+    });
     if (sessionOptions.store?.on) {
       sessionOptions.store.on('error', err => {
         console.error('Session store error:', err?.message || err);
