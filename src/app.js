@@ -22,8 +22,12 @@ if (process.env.VERCEL) {
 const guardLogState = global.__mongoGuardLog || (global.__mongoGuardLog = {
   target: false,
   missing: false,
-  ready: false
+  ready: false,
+  nextAttemptAt: 0
 });
+const MONGO_GUARD_RETRY_DELAY_MS = Number(
+  process.env.MONGO_GUARD_RETRY_DELAY_MS || (process.env.VERCEL ? 10000 : 0)
+);
 
 function getMongoTarget(uri) {
   try {
@@ -109,7 +113,21 @@ app.use(async (req, res, next) => {
     return res.status(503).json({ message: 'Database is not configured.' });
   }
 
-  if (mongoose.connection.readyState === 1) return next();
+  if (mongoose.connection.readyState === 1) {
+    guardLogState.nextAttemptAt = 0;
+    return next();
+  }
+
+  const now = Date.now();
+  if (MONGO_GUARD_RETRY_DELAY_MS > 0 && guardLogState.nextAttemptAt && now < guardLogState.nextAttemptAt) {
+    if (req.accepts('html')) {
+      return res.status(503).render('error/503', {
+        title: 'Tạm dừng dịch vụ',
+        layout: false
+      });
+    }
+    return res.status(503).json({ message: 'Database is not ready.' });
+  }
 
   try {
     if (!guardLogState.target) {
@@ -121,9 +139,15 @@ app.use(async (req, res, next) => {
       guardLogState.ready = true;
     }
     await connectDB();
-    if (mongoose.connection.readyState === 1) return next();
+    if (mongoose.connection.readyState === 1) {
+      guardLogState.nextAttemptAt = 0;
+      return next();
+    }
   } catch (err) {
     console.error('MongoDB connect failed (guard):', err);
+  }
+  if (MONGO_GUARD_RETRY_DELAY_MS > 0) {
+    guardLogState.nextAttemptAt = now + MONGO_GUARD_RETRY_DELAY_MS;
   }
 
   if (req.accepts('html')) {
