@@ -65,7 +65,8 @@ function isAssetRequest(reqPath) {
 }
 
 app.use((req, res, next) => {
-  if (getMongoUri()) return next();
+  const mongoUri = getMongoUri();
+  if (mongoUri && mongoose.connection.readyState === 1) return next();
   if (isAssetRequest(req.path)) return next();
 
   if (req.accepts('html')) {
@@ -76,7 +77,7 @@ app.use((req, res, next) => {
   }
 
   return res.status(503).json({
-    message: 'Database is not configured.'
+    message: mongoUri ? 'Database is not ready.' : 'Database is not configured.'
   });
 });
 
