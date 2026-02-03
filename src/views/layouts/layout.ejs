@@ -24,9 +24,6 @@
 </head>
 <body class="<%= (bodyClass || '') + ' tet-page' %>">
   <div id="tet-lantern-layer" class="tet-2026-lantern-layer" aria-hidden="true"></div>
-  <% if (!(bodyClass || '').includes('auth-page')) { %>
-    <canvas id="tet-fireworks-canvas" class="tet-2026-fireworks-canvas" aria-hidden="true"></canvas>
-  <% } %>
   <%- include('../partials/header') %>
   <main>
     <%- include('../partials/flash') %>
