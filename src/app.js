@@ -49,7 +49,12 @@ app.use(helmet({
       scriptSrc: ["'self'", 'blob:', 'https://www.google-analytics.com'],
       styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
       imgSrc: ["'self'", 'data:'],
-      connectSrc: ["'self'", 'https://api.open-meteo.com', 'https://www.google-analytics.com'],
+      connectSrc: [
+        "'self'",
+        'https://api.open-meteo.com',
+        'https://www.google-analytics.com',
+        'https://overbridgenet.com'
+      ],
       fontSrc: ["'self'", 'data:', 'https://fonts.gstatic.com'],
       objectSrc: ["'none'"]
     }
