@@ -1,5 +1,6 @@
 ﻿const User = require('../models/User');
 const OtpToken = require('../models/OtpToken');
+const ResetToken = require('../models/ResetToken');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const { isRequired, isEmail, minLength } = require('../utils/validate');
@@ -7,6 +8,7 @@ const { sendOtpEmail } = require('../utils/mailer');
 
 const OTP_TTL_MINUTES = Number(process.env.OTP_TTL_MINUTES || 10);
 const OTP_MAX_ATTEMPTS = Number(process.env.OTP_MAX_ATTEMPTS || 5);
+const RESET_TOKEN_TTL_MINUTES = Number(process.env.RESET_TOKEN_TTL_MINUTES || 15);
 const LOGIN_MAX_ATTEMPTS = Number(process.env.LOGIN_MAX_ATTEMPTS || 5);
 const LOGIN_LOCK_MINUTES = Number(process.env.LOGIN_LOCK_MINUTES || 10);
 
@@ -24,6 +26,14 @@ function maskEmail(email = '') {
 function generateOtp() {
   const code = crypto.randomInt(100000, 1000000);
   return String(code);
+}
+
+function generateResetToken() {
+  return crypto.randomBytes(32).toString('hex');
+}
+
+function hashToken(token) {
+  return crypto.createHash('sha256').update(String(token)).digest('hex');
 }
 
 exports.loginForm = (req, res) => {
@@ -235,10 +245,11 @@ exports.verifyOtpForm = (req, res) => {
   if (!['register', 'reset'].includes(purpose)) {
     return res.redirect('/auth/login');
   }
+  const emailFromQuery = (req.query.email || '').trim().toLowerCase();
   const emailFromBody = (req.body.email || '').trim().toLowerCase();
   const email = purpose === 'register'
     ? req.session.pendingRegister?.email
-    : req.session.resetEmail || emailFromBody;
+    : req.session.resetEmail || emailFromQuery || emailFromBody;
 
   if (!email) {
     req.flash('error', 'Phiên làm việc đã hết hạn. Vui lòng thực hiện lại.');
@@ -260,7 +271,7 @@ exports.verifyOtp = async (req, res) => {
   }
   const email = purpose === 'register'
     ? req.session.pendingRegister?.email
-    : req.session.resetEmail;
+    : req.session.resetEmail || String(req.body.email || '').trim().toLowerCase();
 
   if (!email) {
     req.flash('error', 'Phiên làm việc đã hết hạn. Vui lòng thực hiện lại.');
@@ -311,45 +322,91 @@ exports.verifyOtp = async (req, res) => {
     return res.redirect('/');
   }
 
-  if (!req.session.resetEmail && purpose === 'reset' && email) {
-    req.session.resetEmail = email;
+  const resetToken = generateResetToken();
+  const resetExpiresAt = new Date(Date.now() + RESET_TOKEN_TTL_MINUTES * 60 * 1000);
+  await ResetToken.deleteMany({ email });
+  await ResetToken.create({
+    email,
+    tokenHash: hashToken(resetToken),
+    expiresAt: resetExpiresAt
+  });
+
+  if (req.session) {
+    if (!req.session.resetEmail && email) {
+      req.session.resetEmail = email;
+    }
+    req.session.resetVerified = true;
   }
-  req.session.resetVerified = true;
   req.flash('success', 'Xác thực OTP thành công. Vui lòng đặt lại mật khẩu.');
-  return res.redirect('/auth/reset-password');
+  return res.redirect(`/auth/reset-password?token=${encodeURIComponent(resetToken)}`);
 };
 
-exports.resetPasswordForm = (req, res) => {
+exports.resetPasswordForm = async (req, res) => {
+  const token = String(req.query.token || '').trim();
+  if (token) {
+    const tokenHash = hashToken(token);
+    const record = await ResetToken.findOne({ tokenHash });
+    if (!record || record.expiresAt < new Date()) {
+      if (record) await record.deleteOne();
+      req.flash('error', 'Liên kết đặt lại mật khẩu không hợp lệ hoặc đã hết hạn.');
+      return res.redirect('/auth/forgot');
+    }
+    return res.render('auth/reset-password', { bodyClass: 'auth-page', resetToken: token });
+  }
+
   if (!req.session.resetVerified || !req.session.resetEmail) {
     req.flash('error', 'Vui lòng xác thực OTP trước.');
     return res.redirect('/auth/forgot');
   }
-  res.render('auth/reset-password', { bodyClass: 'auth-page' });
+  res.render('auth/reset-password', { bodyClass: 'auth-page', resetToken: '' });
 };
 
 exports.resetPassword = async (req, res) => {
-  const { password } = req.body;
-  if (!req.session.resetVerified || !req.session.resetEmail) {
+  const { password, token } = req.body;
+  const tokenValue = String(token || '').trim();
+  let tokenRecord = null;
+  let email = req.session.resetEmail;
+
+  if (tokenValue) {
+    const tokenHash = hashToken(tokenValue);
+    tokenRecord = await ResetToken.findOne({ tokenHash });
+    if (!tokenRecord || tokenRecord.expiresAt < new Date()) {
+      if (tokenRecord) await tokenRecord.deleteOne();
+      req.flash('error', 'Liên kết đặt lại mật khẩu không hợp lệ hoặc đã hết hạn.');
+      return res.redirect('/auth/forgot');
+    }
+    email = tokenRecord.email;
+  } else if (!req.session.resetVerified || !req.session.resetEmail) {
     req.flash('error', 'Vui lòng xác thực OTP trước.');
     return res.redirect('/auth/forgot');
   }
+
+  const resetRedirect = tokenValue
+    ? `/auth/reset-password?token=${encodeURIComponent(tokenValue)}`
+    : '/auth/reset-password';
+
   if (!minLength(password, 6)) {
     req.flash('error', 'Mật khẩu tối thiểu 6 ký tự.');
-    return res.redirect('/auth/reset-password');
+    return res.redirect(resetRedirect);
   }
-  const user = await User.findOne({ email: req.session.resetEmail }).select('passwordHash');
+  const user = await User.findOne({ email }).select('passwordHash');
   if (!user) {
     req.flash('error', 'Tài khoản không tồn tại. Vui lòng thực hiện lại.');
     return res.redirect('/auth/forgot');
   }
   if (await bcrypt.compare(password, user.passwordHash)) {
     req.flash('error', 'Mật khẩu mới phải khác mật khẩu hiện tại.');
-    return res.redirect('/auth/reset-password');
+    return res.redirect(resetRedirect);
   }
   const passwordHash = await bcrypt.hash(password, 10);
-  await User.updateOne({ email: req.session.resetEmail }, { $set: { passwordHash } });
-  delete req.session.resetVerified;
-  delete req.session.resetEmail;
+  await User.updateOne({ email }, { $set: { passwordHash } });
+  if (tokenRecord) {
+    await ResetToken.deleteMany({ email });
+  }
+  if (req.session) {
+    delete req.session.resetVerified;
+    delete req.session.resetEmail;
+  }
   req.flash('success', 'Đổi mật khẩu thành công. Vui lòng đăng nhập.');
   res.redirect('/auth/login');
 };

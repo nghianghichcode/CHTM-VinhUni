@@ -173,10 +173,34 @@ const sessionOptions = {
 };
 const mongoUri = getMongoUri();
 if (mongoUri) {
-  sessionOptions.store = MongoStore.create({
-    mongoUrl: mongoUri,
-    collectionName: 'sessions'
-  });
+  const isVercel = !!process.env.VERCEL;
+  const defaultTimeout = Number(process.env.MONGODB_TIMEOUT_MS || (isVercel ? 5000 : 20000));
+  const mongoOptions = {
+    serverSelectionTimeoutMS: Number(process.env.MONGODB_SERVER_SELECTION_TIMEOUT_MS || defaultTimeout),
+    connectTimeoutMS: Number(process.env.MONGODB_CONNECT_TIMEOUT_MS || defaultTimeout),
+    socketTimeoutMS: Number(process.env.MONGODB_SOCKET_TIMEOUT_MS || defaultTimeout)
+  };
+  try {
+    if (typeof mongoose.connection?.getClient === 'function') {
+      sessionOptions.store = MongoStore.create({
+        clientPromise: mongoose.connection.asPromise().then(conn => conn.getClient()),
+        collectionName: 'sessions'
+      });
+    } else {
+      sessionOptions.store = MongoStore.create({
+        mongoUrl: mongoUri,
+        mongoOptions,
+        collectionName: 'sessions'
+      });
+    }
+    if (sessionOptions.store?.on) {
+      sessionOptions.store.on('error', err => {
+        console.error('Session store error:', err?.message || err);
+      });
+    }
+  } catch (err) {
+    console.error('Session store init failed:', err?.message || err);
+  }
 }
 app.use(session(sessionOptions));
 
