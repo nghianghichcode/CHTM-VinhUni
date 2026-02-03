@@ -9,6 +9,7 @@ const rateLimit = require('express-rate-limit');
 const path = require('path');
 const flash = require('connect-flash');
 const expressLayouts = require('express-ejs-layouts');
+const { getMongoUri } = require('./config/mongoUri');
 
 const { sanitizeBody } = require('./utils/sanitize');
 const { notFound, errorHandler } = require('./middlewares/error');
@@ -18,7 +19,6 @@ const app = express();
 
 // DB connect
 const connectDB = require('./config/db');
-const { getMongoUri } = require('./config/mongoUri');
 connectDB().catch(err => {
   console.error('MongoDB connect failed:', err);
 });
@@ -28,10 +28,10 @@ app.use(helmet({
   contentSecurityPolicy: {
     directives: {
       defaultSrc: ["'self'"],
-      scriptSrc: ["'self'"],
+      scriptSrc: ["'self'", 'blob:', 'https://www.google-analytics.com'],
       styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
       imgSrc: ["'self'", 'data:'],
-      connectSrc: ["'self'", 'https://api.open-meteo.com'],
+      connectSrc: ["'self'", 'https://api.open-meteo.com', 'https://www.google-analytics.com'],
       fontSrc: ["'self'", 'data:', 'https://fonts.gstatic.com'],
       objectSrc: ["'none'"]
     }
@@ -78,6 +78,32 @@ app.use(sanitizeBody);
 
 // Set locals for views
 app.use(setLocals);
+
+// Guard when MongoDB is not configured
+const assetPrefixes = ['/css', '/js', '/images', '/uploads', '/downloads'];
+const assetExtensions = new Set([
+  '.css', '.js', '.png', '.jpg', '.jpeg', '.webp', '.svg', '.ico', '.gif',
+  '.map', '.woff', '.woff2', '.ttf', '.eot'
+]);
+function isAssetRequest(reqPath) {
+  if (assetPrefixes.some(prefix => reqPath.startsWith(prefix))) return true;
+  return assetExtensions.has(path.extname(reqPath).toLowerCase());
+}
+
+app.use((req, res, next) => {
+  if (getMongoUri()) return next();
+  if (isAssetRequest(req.path)) return next();
+
+  if (req.accepts('html')) {
+    return res.status(503).render('error/503', {
+      title: 'Tạm dừng dịch vụ'
+    });
+  }
+
+  return res.status(503).json({
+    message: 'Database is not configured.'
+  });
+});
 
 // Rate limiters
 const loginLimiter = rateLimit({
