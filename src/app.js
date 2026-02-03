@@ -64,10 +64,29 @@ function isAssetRequest(reqPath) {
   return assetExtensions.has(path.extname(reqPath).toLowerCase());
 }
 
-app.use((req, res, next) => {
+app.use(async (req, res, next) => {
   const mongoUri = getMongoUri();
-  if (mongoUri && mongoose.connection.readyState === 1) return next();
   if (isAssetRequest(req.path)) return next();
+
+  if (!mongoUri) {
+    if (req.accepts('html')) {
+      return res.status(503).render('error/503', {
+        title: 'Tạm dừng dịch vụ',
+        layout: false
+      });
+    }
+
+    return res.status(503).json({ message: 'Database is not configured.' });
+  }
+
+  if (mongoose.connection.readyState === 1) return next();
+
+  try {
+    await connectDB();
+    if (mongoose.connection.readyState === 1) return next();
+  } catch (err) {
+    console.error('MongoDB connect failed (guard):', err);
+  }
 
   if (req.accepts('html')) {
     return res.status(503).render('error/503', {
@@ -76,9 +95,7 @@ app.use((req, res, next) => {
     });
   }
 
-  return res.status(503).json({
-    message: mongoUri ? 'Database is not ready.' : 'Database is not configured.'
-  });
+  return res.status(503).json({ message: 'Database is not ready.' });
 });
 
 // Body parser
