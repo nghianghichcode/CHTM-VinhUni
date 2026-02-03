@@ -8,6 +8,19 @@ if (!cached) {
   cached = global.__mongooseConn = { conn: null, promise: null };
 }
 
+function getMongoTarget(uri) {
+  try {
+    const parsed = new URL(uri);
+    const host = parsed.host;
+    const db = (parsed.pathname || '').replace(/^\//, '') || '(none)';
+    return { host, db };
+  } catch (err) {
+    const match = uri.match(/mongodb\+srv:\/\/(?:[^@]+@)?([^/]+)\/([^?]+)/i);
+    if (!match) return { host: '(unknown)', db: '(unknown)' };
+    return { host: match[1], db: match[2] };
+  }
+}
+
 module.exports = async function connectDB() {
   const mongoUri = getMongoUri();
   if (!mongoUri) {
@@ -17,6 +30,8 @@ module.exports = async function connectDB() {
   if (cached.conn) return cached.conn;
 
   if (!cached.promise) {
+    const target = getMongoTarget(mongoUri);
+    console.log('MongoDB connect target:', target);
     cached.promise = mongoose.connect(mongoUri, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
