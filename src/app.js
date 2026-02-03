@@ -44,6 +44,32 @@ app.use(morgan('dev'));
 // Static (phá»¥c vá»¥ public ngoÃ i src)
 app.use(express.static(path.join(__dirname, '../public')));
 
+// Guard when MongoDB is not configured
+const assetPrefixes = ['/css', '/js', '/images', '/uploads', '/downloads'];
+const assetExtensions = new Set([
+  '.css', '.js', '.png', '.jpg', '.jpeg', '.webp', '.svg', '.ico', '.gif',
+  '.map', '.woff', '.woff2', '.ttf', '.eot'
+]);
+function isAssetRequest(reqPath) {
+  if (assetPrefixes.some(prefix => reqPath.startsWith(prefix))) return true;
+  return assetExtensions.has(path.extname(reqPath).toLowerCase());
+}
+
+app.use((req, res, next) => {
+  if (getMongoUri()) return next();
+  if (isAssetRequest(req.path)) return next();
+
+  if (req.accepts('html')) {
+    return res.status(503).render('error/503', {
+      title: 'Tạm dừng dịch vụ'
+    });
+  }
+
+  return res.status(503).json({
+    message: 'Database is not configured.'
+  });
+});
+
 // Body parser
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
@@ -78,32 +104,6 @@ app.use(sanitizeBody);
 
 // Set locals for views
 app.use(setLocals);
-
-// Guard when MongoDB is not configured
-const assetPrefixes = ['/css', '/js', '/images', '/uploads', '/downloads'];
-const assetExtensions = new Set([
-  '.css', '.js', '.png', '.jpg', '.jpeg', '.webp', '.svg', '.ico', '.gif',
-  '.map', '.woff', '.woff2', '.ttf', '.eot'
-]);
-function isAssetRequest(reqPath) {
-  if (assetPrefixes.some(prefix => reqPath.startsWith(prefix))) return true;
-  return assetExtensions.has(path.extname(reqPath).toLowerCase());
-}
-
-app.use((req, res, next) => {
-  if (getMongoUri()) return next();
-  if (isAssetRequest(req.path)) return next();
-
-  if (req.accepts('html')) {
-    return res.status(503).render('error/503', {
-      title: 'Tạm dừng dịch vụ'
-    });
-  }
-
-  return res.status(503).json({
-    message: 'Database is not configured.'
-  });
-});
 
 // Rate limiters
 const loginLimiter = rateLimit({
