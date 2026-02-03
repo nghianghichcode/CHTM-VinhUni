@@ -41,7 +41,11 @@
             <p>Chưa nhận được mã? <a href="/auth/resend-otp?purpose=register" class="link-tet">Gửi lại OTP</a></p>
             <p><a href="/auth/register" class="link-tet">Quay lại</a></p>
           <% } else { %>
-            <p>Chưa nhận được mã? <a href="/auth/resend-otp?purpose=reset" class="link-tet">Gửi lại OTP</a></p>
+            <% if (emailValue) { %>
+              <p>Chưa nhận được mã? <a href="/auth/resend-otp?purpose=reset&email=<%= encodeURIComponent(emailValue) %>" class="link-tet">Gửi lại OTP</a></p>
+            <% } else { %>
+              <p>Chưa nhận được mã? <a href="/auth/resend-otp?purpose=reset" class="link-tet">Gửi lại OTP</a></p>
+            <% } %>
             <p><a href="/auth/forgot" class="link-tet">Quay lại</a></p>
           <% } %>
         </div>
