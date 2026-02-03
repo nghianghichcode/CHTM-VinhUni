@@ -8,6 +8,10 @@ if (!cached) {
   cached = global.__mongooseConn = { conn: null, promise: null };
 }
 
+function delay(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 function getMongoTarget(uri) {
   try {
     const parsed = new URL(uri);
@@ -18,6 +22,19 @@ function getMongoTarget(uri) {
     const match = uri.match(/mongodb\+srv:\/\/(?:[^@]+@)?([^/]+)\/([^?]+)/i);
     if (!match) return { host: '(unknown)', db: '(unknown)' };
     return { host: match[1], db: match[2] };
+  }
+}
+
+async function connectWithRetry(uri, options, retries) {
+  try {
+    return await mongoose.connect(uri, options);
+  } catch (err) {
+    if (retries > 0) {
+      console.warn('MongoDB connect failed, retrying...', err.code || err.name);
+      await delay(800);
+      return connectWithRetry(uri, options, retries - 1);
+    }
+    throw err;
   }
 }
 
@@ -32,15 +49,19 @@ module.exports = async function connectDB() {
   if (!cached.promise) {
     const target = getMongoTarget(mongoUri);
     console.log('MongoDB connect target:', target);
-    cached.promise = mongoose.connect(mongoUri, {
+    cached.promise = connectWithRetry(mongoUri, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
-      serverSelectionTimeoutMS: 8000
-    }).then((mongooseInstance) => {
+      serverSelectionTimeoutMS: 20000,
+      connectTimeoutMS: 20000,
+      socketTimeoutMS: 20000,
+      maxPoolSize: 10
+    }, 1).then((mongooseInstance) => {
       console.log('MongoDB connected');
       return mongooseInstance;
     }).catch(err => {
       console.error('MongoDB connection error:', err);
+      cached.promise = null;
       if (!process.env.VERCEL) process.exit(1);
       throw err;
     });
