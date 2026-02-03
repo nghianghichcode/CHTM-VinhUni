@@ -44,6 +44,12 @@ app.use(morgan('dev'));
 // Static (phá»¥c vá»¥ public ngoÃ i src)
 app.use(express.static(path.join(__dirname, '../public')));
 
+// EJS
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+app.use(expressLayouts);
+app.set('layout', 'layouts/layout');
+
 // Guard when MongoDB is not configured
 const assetPrefixes = ['/css', '/js', '/images', '/uploads', '/downloads'];
 const assetExtensions = new Set([
@@ -73,12 +79,6 @@ app.use((req, res, next) => {
 // Body parser
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
-
-// EJS
-app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
-app.use(expressLayouts);
-app.set('layout', 'layouts/layout');
 
 // Session
 const sessionOptions = {
