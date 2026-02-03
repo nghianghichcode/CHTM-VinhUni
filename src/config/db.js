@@ -8,6 +8,11 @@ if (!cached) {
   cached = global.__mongooseConn = { conn: null, promise: null };
 }
 
+function readNumberEnv(value, fallback) {
+  const num = Number(value);
+  return Number.isFinite(num) ? num : fallback;
+}
+
 function delay(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -47,16 +52,31 @@ module.exports = async function connectDB() {
   if (cached.conn) return cached.conn;
 
   if (!cached.promise) {
+    const isVercel = !!process.env.VERCEL;
+    const defaultTimeout = readNumberEnv(process.env.MONGODB_TIMEOUT_MS, isVercel ? 5000 : 20000);
+    const serverSelectionTimeoutMS = readNumberEnv(
+      process.env.MONGODB_SERVER_SELECTION_TIMEOUT_MS,
+      defaultTimeout
+    );
+    const connectTimeoutMS = readNumberEnv(
+      process.env.MONGODB_CONNECT_TIMEOUT_MS,
+      defaultTimeout
+    );
+    const socketTimeoutMS = readNumberEnv(
+      process.env.MONGODB_SOCKET_TIMEOUT_MS,
+      defaultTimeout
+    );
+    const retries = readNumberEnv(process.env.MONGODB_CONNECT_RETRIES, isVercel ? 0 : 1);
     const target = getMongoTarget(mongoUri);
     console.log('MongoDB connect target:', target);
     cached.promise = connectWithRetry(mongoUri, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
-      serverSelectionTimeoutMS: 20000,
-      connectTimeoutMS: 20000,
-      socketTimeoutMS: 20000,
+      serverSelectionTimeoutMS,
+      connectTimeoutMS,
+      socketTimeoutMS,
       maxPoolSize: 10
-    }, 1).then((mongooseInstance) => {
+    }, retries).then((mongooseInstance) => {
       console.log('MongoDB connected');
       return mongooseInstance;
     }).catch(err => {
