@@ -67,7 +67,8 @@ app.use((req, res, next) => {
 
   if (req.accepts('html')) {
     return res.status(503).render('error/503', {
-      title: 'Tạm dừng dịch vụ'
+      title: 'Tạm dừng dịch vụ',
+      layout: false
     });
   }
 
