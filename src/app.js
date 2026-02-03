@@ -16,6 +16,9 @@ const { notFound, errorHandler } = require('./middlewares/error');
 const { setLocals } = require('./middlewares/locals');
 
 const app = express();
+if (process.env.VERCEL) {
+  app.set('trust proxy', 1);
+}
 const guardLogState = global.__mongoGuardLog || (global.__mongoGuardLog = {
   target: false,
   missing: false,
