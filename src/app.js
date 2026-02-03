@@ -16,6 +16,24 @@ const { notFound, errorHandler } = require('./middlewares/error');
 const { setLocals } = require('./middlewares/locals');
 
 const app = express();
+const guardLogState = global.__mongoGuardLog || (global.__mongoGuardLog = {
+  target: false,
+  missing: false,
+  ready: false
+});
+
+function getMongoTarget(uri) {
+  try {
+    const parsed = new URL(uri);
+    const host = parsed.host;
+    const db = (parsed.pathname || '').replace(/^\//, '') || '(none)';
+    return { host, db };
+  } catch (err) {
+    const match = uri.match(/mongodb\+srv:\/\/(?:[^@]+@)?([^/]+)\/([^?]+)/i);
+    if (!match) return { host: '(unknown)', db: '(unknown)' };
+    return { host: match[1], db: match[2] };
+  }
+}
 
 // DB connect
 const connectDB = require('./config/db');
@@ -69,6 +87,10 @@ app.use(async (req, res, next) => {
   if (isAssetRequest(req.path)) return next();
 
   if (!mongoUri) {
+    if (!guardLogState.missing) {
+      console.warn('MongoDB guard: MONGODB_URI missing or placeholder.');
+      guardLogState.missing = true;
+    }
     if (req.accepts('html')) {
       return res.status(503).render('error/503', {
         title: 'Tạm dừng dịch vụ',
@@ -82,6 +104,14 @@ app.use(async (req, res, next) => {
   if (mongoose.connection.readyState === 1) return next();
 
   try {
+    if (!guardLogState.target) {
+      console.log('MongoDB guard target:', getMongoTarget(mongoUri));
+      guardLogState.target = true;
+    }
+    if (!guardLogState.ready) {
+      console.warn('MongoDB guard: readyState before connect:', mongoose.connection.readyState);
+      guardLogState.ready = true;
+    }
     await connectDB();
     if (mongoose.connection.readyState === 1) return next();
   } catch (err) {
