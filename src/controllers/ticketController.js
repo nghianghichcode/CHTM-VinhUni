@@ -1,4 +1,5 @@
 const Ticket = require('../models/Ticket');
+const mongoose = require('mongoose');
 const { getMeta } = require('../utils/meta');
 
 exports.intro = (req, res) => {
@@ -25,6 +26,7 @@ exports.myTickets = async (req, res) => {
 };
 
 exports.detail = async (req, res) => {
+  if (!mongoose.Types.ObjectId.isValid(req.params.id)) return res.status(404).render('error/404');
   const ticket = await Ticket.findById(req.params.id);
   if (!ticket || ticket.user.toString() !== req.session.user._id && req.session.user.role !== 'admin')
     return res.status(404).render('error/404');

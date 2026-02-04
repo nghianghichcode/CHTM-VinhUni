@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const tipController = require('../controllers/tipController');
+const { asyncHandler } = require('../middlewares/asyncHandler');
 
-router.get('/:slug', tipController.byTag);
+router.get('/:slug', asyncHandler(tipController.byTag));
 
 module.exports = router;

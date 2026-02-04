@@ -1,16 +1,27 @@
 const Tip = require('../models/Tip');
 const Category = require('../models/Category');
 const Tag = require('../models/Tag');
+const mongoose = require('mongoose');
 const { getMeta } = require('../utils/meta');
+const { escapeRegex } = require('../utils/escapeRegex');
 
 exports.list = async (req, res) => {
   const { category, tag, q, sort } = req.query;
   let filter = { status: 'published' };
-  if (category) filter.category = category;
-  if (tag) filter.tags = tag;
-  if (q) filter.title = { $regex: q, $options: 'i' };
-  let sortOpt = { createdAt: -1 };
-  if (sort === 'views') sortOpt = { views: -1 };
+  if (category) {
+    if (!mongoose.Types.ObjectId.isValid(category)) return res.status(404).render('error/404');
+    filter.category = category;
+  }
+  if (tag) {
+    if (!mongoose.Types.ObjectId.isValid(tag)) return res.status(404).render('error/404');
+    filter.tags = tag;
+  }
+  if (q) filter.title = { $regex: escapeRegex(q), $options: 'i' };
+  const sortOptions = {
+    views: { views: -1 },
+    newest: { createdAt: -1 }
+  };
+  const sortOpt = sortOptions[sort] || { createdAt: -1 };
   const tips = await Tip.find(filter).populate('category tags').sort(sortOpt).limit(20);
   const categories = await Category.find();
   const tags = await Tag.find();
@@ -21,7 +32,7 @@ exports.list = async (req, res) => {
     query: q || '',
     selectedCategory: category || '',
     selectedTag: tag || '',
-    selectedSort: sort || '',
+    selectedSort: sort === 'views' ? 'views' : '',
     meta: getMeta({ title: 'Thư viện thủ thuật' })
   });
 };
