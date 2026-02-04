@@ -178,7 +178,11 @@ exports.forgot = async (req, res) => {
     }
   }
 
-  req.session.resetEmail = emailNormalized;
+  if (user) {
+    req.session.resetEmail = emailNormalized;
+  } else if (req.session?.resetEmail) {
+    delete req.session.resetEmail;
+  }
   if (sendFailed) {
     req.flash('error', 'Không thể gửi email OTP. Vui lòng thử lại sau.');
   } else {
@@ -291,8 +295,16 @@ exports.verifyOtp = async (req, res) => {
 
   const isMatch = await bcrypt.compare(String(otp || '').trim(), token.codeHash);
   if (!isMatch) {
-    token.attempts += 1;
-    await token.save();
+    const updated = await OtpToken.findOneAndUpdate(
+      { _id: token._id, attempts: { $lt: OTP_MAX_ATTEMPTS } },
+      { $inc: { attempts: 1 } },
+      { new: true }
+    );
+    if (!updated || updated.attempts >= OTP_MAX_ATTEMPTS) {
+      await OtpToken.deleteOne({ _id: token._id });
+      req.flash('error', 'Bạn đã nhập sai quá số lần cho phép.');
+      return res.redirect(purpose === 'register' ? '/auth/register' : '/auth/forgot');
+    }
     req.flash('error', 'Mã OTP không đúng.');
     return res.redirect(`/auth/verify-otp?purpose=${purpose}`);
   }

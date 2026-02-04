@@ -4,8 +4,18 @@ const Category = require('../models/Category');
 const Tag = require('../models/Tag');
 const Ticket = require('../models/Ticket');
 const Contact = require('../models/Contact');
+const mongoose = require('mongoose');
 const slugifyVN = require('../utils/slugify');
 const { getMeta } = require('../utils/meta');
+const { escapeRegex } = require('../utils/escapeRegex');
+
+function isValidObjectId(id) {
+  return mongoose.Types.ObjectId.isValid(id);
+}
+
+function renderNotFound(res) {
+  return res.status(404).render('error/404');
+}
 
 exports.loginForm = (req, res) => {
   res.render('admin/login');
@@ -46,22 +56,27 @@ exports.tips = async (req, res) => {
 };
 
 exports.tipForm = async (req, res) => {
+  let tip = null;
+  if (req.params.id) {
+    if (!isValidObjectId(req.params.id)) return renderNotFound(res);
+    tip = await Tip.findById(req.params.id);
+    if (!tip) return renderNotFound(res);
+  }
   const categories = await Category.find();
   const tags = await Tag.find();
-  let tip = null;
-  if (req.params.id) tip = await Tip.findById(req.params.id);
   res.render('admin/tip-form', { tip, categories, tags });
 };
 
 exports.tipSave = async (req, res) => {
   const { id, title, excerpt, content, thumbnail, category, tags, status, isFeatured, removeThumbnail } = req.body;
+  if (id && !isValidObjectId(id)) return renderNotFound(res);
   const slug = slugifyVN(title);
   const tagsArray = Array.isArray(tags) ? tags : (tags ? [tags] : []);
   let thumbnailPath = thumbnail;
   if (removeThumbnail) thumbnailPath = '';
   if (req.file) thumbnailPath = `/uploads/tips/${req.file.filename}`;
   if (id) {
-    await Tip.findByIdAndUpdate(id, {
+    const updated = await Tip.findByIdAndUpdate(id, {
       title,
       slug,
       excerpt,
@@ -73,6 +88,7 @@ exports.tipSave = async (req, res) => {
       isFeatured: !!isFeatured,
       updatedAt: Date.now()
     });
+    if (!updated) return renderNotFound(res);
   } else {
     await Tip.create({
       title,
@@ -95,7 +111,9 @@ exports.tipImageUpload = async (req, res) => {
 };
 
 exports.tipDelete = async (req, res) => {
-  await Tip.findByIdAndDelete(req.params.id);
+  if (!isValidObjectId(req.params.id)) return renderNotFound(res);
+  const deleted = await Tip.findByIdAndDelete(req.params.id);
+  if (!deleted) return renderNotFound(res);
   res.redirect('/admin/tips');
 };
 
@@ -109,7 +127,9 @@ exports.categorySave = async (req, res) => {
   const { id, name } = req.body;
   const slug = slugifyVN(name);
   if (id) {
-    await Category.findByIdAndUpdate(id, { name, slug });
+    if (!isValidObjectId(id)) return renderNotFound(res);
+    const updated = await Category.findByIdAndUpdate(id, { name, slug });
+    if (!updated) return renderNotFound(res);
   } else {
     await Category.create({ name, slug });
   }
@@ -117,7 +137,9 @@ exports.categorySave = async (req, res) => {
 };
 
 exports.categoryDelete = async (req, res) => {
-  await Category.findByIdAndDelete(req.params.id);
+  if (!isValidObjectId(req.params.id)) return renderNotFound(res);
+  const deleted = await Category.findByIdAndDelete(req.params.id);
+  if (!deleted) return renderNotFound(res);
   res.redirect('/admin/categories');
 };
 
@@ -131,7 +153,9 @@ exports.tagSave = async (req, res) => {
   const { id, name } = req.body;
   const slug = slugifyVN(name);
   if (id) {
-    await Tag.findByIdAndUpdate(id, { name, slug });
+    if (!isValidObjectId(id)) return renderNotFound(res);
+    const updated = await Tag.findByIdAndUpdate(id, { name, slug });
+    if (!updated) return renderNotFound(res);
   } else {
     await Tag.create({ name, slug });
   }
@@ -139,7 +163,9 @@ exports.tagSave = async (req, res) => {
 };
 
 exports.tagDelete = async (req, res) => {
-  await Tag.findByIdAndDelete(req.params.id);
+  if (!isValidObjectId(req.params.id)) return renderNotFound(res);
+  const deleted = await Tag.findByIdAndDelete(req.params.id);
+  if (!deleted) return renderNotFound(res);
   res.redirect('/admin/tags');
 };
 
@@ -148,19 +174,29 @@ exports.tickets = async (req, res) => {
   const { status, q } = req.query;
   let filter = {};
   if (status) filter.status = status;
-  if (q) filter.$or = [{ name: { $regex: q, $options: 'i' } }, { phone: { $regex: q } }];
+  if (q) {
+    const safeQuery = escapeRegex(q);
+    filter.$or = [
+      { name: { $regex: safeQuery, $options: 'i' } },
+      { phone: { $regex: safeQuery } }
+    ];
+  }
   const tickets = await Ticket.find(filter).sort({ createdAt: -1 });
   res.render('admin/tickets', { tickets, query: q || '', selectedStatus: status || '' });
 };
 
 exports.ticketDetail = async (req, res) => {
+  if (!isValidObjectId(req.params.id)) return renderNotFound(res);
   const ticket = await Ticket.findById(req.params.id);
+  if (!ticket) return renderNotFound(res);
   res.render('admin/ticket-detail', { ticket });
 };
 
 exports.ticketUpdate = async (req, res) => {
   const { status, note } = req.body;
+  if (!isValidObjectId(req.params.id)) return renderNotFound(res);
   const ticket = await Ticket.findById(req.params.id);
+  if (!ticket) return renderNotFound(res);
   if (status) ticket.status = status;
   if (note) ticket.adminNotes.push({ note });
   await ticket.save();

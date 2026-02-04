@@ -5,6 +5,7 @@ const multer = require('multer');
 const router = express.Router();
 const adminController = require('../controllers/adminController');
 const { ensureAdmin, ensureGuest } = require('../middlewares/auth');
+const { asyncHandler } = require('../middlewares/asyncHandler');
 
 const uploadDir = path.join(__dirname, '../../public/uploads/tips');
 fs.mkdirSync(uploadDir, { recursive: true });
@@ -31,37 +32,37 @@ router.use((req, res, next) => {
 });
 
 router.get('/login', ensureGuest, adminController.loginForm);
-router.post('/login', ensureGuest, adminController.login);
+router.post('/login', ensureGuest, asyncHandler(adminController.login));
 
 router.use(ensureAdmin);
 
-router.get('/', adminController.dashboard);
+router.get('/', asyncHandler(adminController.dashboard));
 
 // Tips
-router.get('/tips', adminController.tips);
-router.get('/tips/new', adminController.tipForm);
-router.get('/tips/:id/edit', adminController.tipForm);
-router.post('/tips/save', upload.single('thumbnailFile'), adminController.tipSave);
-router.post('/tips/:id/delete', adminController.tipDelete);
+router.get('/tips', asyncHandler(adminController.tips));
+router.get('/tips/new', asyncHandler(adminController.tipForm));
+router.get('/tips/:id/edit', asyncHandler(adminController.tipForm));
+router.post('/tips/save', upload.single('thumbnailFile'), asyncHandler(adminController.tipSave));
+router.post('/tips/:id/delete', asyncHandler(adminController.tipDelete));
 
-router.post('/uploads/tip-image', upload.single('image'), adminController.tipImageUpload);
+router.post('/uploads/tip-image', upload.single('image'), asyncHandler(adminController.tipImageUpload));
 
 // Categories
-router.get('/categories', adminController.categories);
-router.post('/categories/save', adminController.categorySave);
-router.post('/categories/:id/delete', adminController.categoryDelete);
+router.get('/categories', asyncHandler(adminController.categories));
+router.post('/categories/save', asyncHandler(adminController.categorySave));
+router.post('/categories/:id/delete', asyncHandler(adminController.categoryDelete));
 
 // Tags
-router.get('/tags', adminController.tags);
-router.post('/tags/save', adminController.tagSave);
-router.post('/tags/:id/delete', adminController.tagDelete);
+router.get('/tags', asyncHandler(adminController.tags));
+router.post('/tags/save', asyncHandler(adminController.tagSave));
+router.post('/tags/:id/delete', asyncHandler(adminController.tagDelete));
 
 // Tickets
-router.get('/tickets', adminController.tickets);
-router.get('/tickets/:id', adminController.ticketDetail);
-router.post('/tickets/:id/update', adminController.ticketUpdate);
+router.get('/tickets', asyncHandler(adminController.tickets));
+router.get('/tickets/:id', asyncHandler(adminController.ticketDetail));
+router.post('/tickets/:id/update', asyncHandler(adminController.ticketUpdate));
 
 // Contacts
-router.get('/contacts', adminController.contacts);
+router.get('/contacts', asyncHandler(adminController.contacts));
 
 module.exports = router;

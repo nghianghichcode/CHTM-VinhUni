@@ -4,6 +4,7 @@ const fs = require('fs');
 const multer = require('multer');
 const router = express.Router();
 const { ensureAuth } = require('../middlewares/auth');
+const { asyncHandler } = require('../middlewares/asyncHandler');
 const Ticket = require('../models/Ticket');
 const User = require('../models/User');
 const { getMeta } = require('../utils/meta');
@@ -28,16 +29,16 @@ const fileFilter = (req, file, cb) => {
 
 const upload = multer({ storage, fileFilter, limits: { fileSize: 2 * 1024 * 1024 } });
 
-router.get('/', ensureAuth, async (req, res) => {
+router.get('/', ensureAuth, asyncHandler(async (req, res) => {
   const tickets = await Ticket.find({ user: req.session.user._id }).sort({ createdAt: -1 });
   res.render('profile', {
     tickets,
     meta: getMeta({ title: 'Hồ sơ của tôi' }),
     bodyClass: 'profile-page'
   });
-});
+}));
 
-router.post('/avatar', ensureAuth, upload.single('avatar'), async (req, res) => {
+router.post('/avatar', ensureAuth, upload.single('avatar'), asyncHandler(async (req, res) => {
   if (!req.file) {
     req.flash('error', 'Vui lòng chọn ảnh hợp lệ (tối đa 2MB).');
     return res.redirect('/profile');
@@ -56,9 +57,9 @@ router.post('/avatar', ensureAuth, upload.single('avatar'), async (req, res) => 
 
   req.flash('success', 'Cập nhật ảnh đại diện thành công.');
   return res.redirect('/profile');
-});
+}));
 
-router.post('/update', ensureAuth, async (req, res) => {
+router.post('/update', ensureAuth, asyncHandler(async (req, res) => {
   const name = (req.body.name || '').trim();
   const phone = (req.body.phone || '').trim();
   const zalo = (req.body.zalo || '').trim();
@@ -85,6 +86,6 @@ router.post('/update', ensureAuth, async (req, res) => {
   req.session.user = { ...req.session.user, ...update };
   req.flash('success', 'Cập nhật thông tin cá nhân thành công.');
   return res.redirect('/profile');
-});
+}));
 
 module.exports = router;
