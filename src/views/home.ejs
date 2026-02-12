@@ -259,18 +259,61 @@
     </div>
     <div class="accordion-item">
       <button class="accordion-title">Làm sao để liên hệ kỹ thuật?</button>
-      <div class="accordion-content">Gửi phiếu cứu hộ hoặc liên hệ qua form bên dưới.</div>
+      <div class="accordion-content">Gửi phiếu cứu hộ trong mục Cứu hộ, đội kỹ thuật sẽ xử lý nhanh.</div>
     </div>
   </div>
 </section>
-<section class="contact container">
-  <h2>Liên hệ</h2>
-  <form method="post" action="/contact">
-    <input type="text" name="name" placeholder="Họ tên" required>
-    <input type="email" name="email" placeholder="Email" required>
-    <textarea name="message" placeholder="Nội dung" required></textarea>
-    <button type="submit" class="btn btn-primary">Gửi liên hệ</button>
-  </form>
+<section class="leaders-timeline container">
+  <div class="section-head">
+    <h2>Timeline Đội Ngũ Qua Các Giai Đoạn</h2>
+    <p>Rê chuột vào từng người để xem thông tin. Ảnh sẽ cập nhật sau.</p>
+  </div>
+  <div class="leaders-track">
+    <article class="leader-node" tabindex="0">
+      <span class="leader-period">2018 - 2019</span>
+      <div class="leader-dot"></div>
+      <div class="leader-avatar placeholder">A</div>
+      <h3>Nguyễn Văn A</h3>
+      <div class="leader-hover-card">
+        <div class="leader-hover-photo" aria-hidden="true">Ảnh</div>
+        <p><strong>Chức vụ:</strong> Đội trưởng</p>
+        <p><strong>Phụ trách:</strong> Vận hành & hỗ trợ kỹ thuật</p>
+      </div>
+    </article>
+    <article class="leader-node" tabindex="0">
+      <span class="leader-period">2019 - 2021</span>
+      <div class="leader-dot"></div>
+      <div class="leader-avatar placeholder">B</div>
+      <h3>Trần Thị B</h3>
+      <div class="leader-hover-card">
+        <div class="leader-hover-photo" aria-hidden="true">Ảnh</div>
+        <p><strong>Chức vụ:</strong> Phó Đội trưởng</p>
+        <p><strong>Phụ trách:</strong> Truyền thông & sự kiện</p>
+      </div>
+    </article>
+    <article class="leader-node" tabindex="0">
+      <span class="leader-period">2021 - 2023</span>
+      <div class="leader-dot"></div>
+      <div class="leader-avatar placeholder">C</div>
+      <h3>Phạm Văn C</h3>
+      <div class="leader-hover-card">
+        <div class="leader-hover-photo" aria-hidden="true">Ảnh</div>
+        <p><strong>Chức vụ:</strong> Đội trưởng</p>
+        <p><strong>Phụ trách:</strong> Kỹ thuật hệ thống</p>
+      </div>
+    </article>
+    <article class="leader-node" tabindex="0">
+      <span class="leader-period">2023 - Nay</span>
+      <div class="leader-dot"></div>
+      <div class="leader-avatar placeholder">D</div>
+      <h3>Lê Thị D</h3>
+      <div class="leader-hover-card">
+        <div class="leader-hover-photo" aria-hidden="true">Ảnh</div>
+        <p><strong>Chức vụ:</strong> Đội trưởng</p>
+        <p><strong>Phụ trách:</strong> Định hướng & điều phối</p>
+      </div>
+    </article>
+  </div>
 </section>
 <div class="container flex">
   <%- include('partials/sidebar', { topTips, tags, stats }) %>
