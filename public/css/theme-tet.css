@@ -1875,3 +1875,161 @@ body.tet-page .tags a:hover {
     color: #fff7ed;
   }
 }
+
+/* Home: leaders timeline with hover profile card */
+body.home .leaders-timeline {
+  position: relative;
+  padding-top: 2rem;
+  z-index: 3;
+}
+
+body.home .leaders-track {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(180px, 1fr));
+  gap: 1rem;
+  margin-top: 1.4rem;
+  padding-bottom: 140px;
+}
+
+body.home .leaders-track::before {
+  content: "";
+  position: absolute;
+  top: 54px;
+  left: 8%;
+  right: 8%;
+  height: 2px;
+  background: linear-gradient(90deg, rgba(255, 210, 125, 0.25), rgba(255, 210, 125, 0.75), rgba(255, 210, 125, 0.25));
+}
+
+body.home .leader-node {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  justify-items: center;
+  gap: 0.55rem;
+  text-align: center;
+  padding: 0.25rem 0.4rem 0.6rem;
+  outline: none;
+}
+
+body.home .leader-period {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #ffe4b3;
+  letter-spacing: 0.02em;
+}
+
+body.home .leader-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  border: 2px solid #ffd27d;
+  background: #451111;
+  box-shadow: 0 0 0 4px rgba(255, 210, 125, 0.14);
+}
+
+body.home .leader-avatar {
+  width: 86px;
+  height: 86px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  border: 2px solid rgba(255, 210, 125, 0.75);
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: #fff6de;
+}
+
+body.home .leader-avatar.placeholder {
+  background: radial-gradient(circle at 30% 30%, rgba(251, 191, 36, 0.5), rgba(133, 35, 35, 0.86));
+}
+
+body.home .leader-node h3 {
+  margin: 0;
+  color: #fff7ed;
+  font-size: 1rem;
+}
+
+body.home .leader-hover-card {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%) translateY(6px);
+  width: min(260px, 75vw);
+  padding: 0.7rem 0.85rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 210, 125, 0.28);
+  background: rgba(25, 8, 8, 0.92);
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.35);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: transform 0.2s ease, opacity 0.2s ease, visibility 0.2s ease;
+}
+
+body.home .leader-hover-card p {
+  margin: 0;
+  color: rgba(255, 244, 230, 0.9);
+  font-size: 0.9rem;
+}
+
+body.home .leader-hover-photo {
+  width: 92px;
+  height: 92px;
+  margin: 0 auto 0.55rem;
+  border-radius: 12px;
+  border: 1px dashed rgba(255, 210, 125, 0.55);
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.18), rgba(123, 32, 32, 0.3));
+  color: rgba(255, 244, 230, 0.9);
+  font-size: 0.86rem;
+  font-weight: 600;
+  display: grid;
+  place-items: center;
+}
+
+body.home .leader-hover-card p + p {
+  margin-top: 0.35rem;
+}
+
+body.home .leader-node:hover .leader-hover-card,
+body.home .leader-node:focus-within .leader-hover-card,
+body.home .leader-node:focus .leader-hover-card {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+body.home .leader-node:hover .leader-avatar,
+body.home .leader-node:focus-within .leader-avatar,
+body.home .leader-node:focus .leader-avatar {
+  border-color: #ffd27d;
+  box-shadow: 0 0 0 6px rgba(255, 210, 125, 0.18);
+}
+
+@media (max-width: 980px) {
+  body.home .leaders-track {
+    grid-template-columns: repeat(2, minmax(150px, 1fr));
+    row-gap: 1.2rem;
+    padding-bottom: 110px;
+  }
+  body.home .leaders-track::before {
+    display: none;
+  }
+}
+
+@media (max-width: 560px) {
+  body.home .leaders-track {
+    grid-template-columns: 1fr;
+    padding-bottom: 0;
+  }
+  body.home .leader-hover-card {
+    position: static;
+    width: 100%;
+    margin-top: 0.35rem;
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    pointer-events: auto;
+  }
+}
