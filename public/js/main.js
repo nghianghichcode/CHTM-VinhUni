@@ -234,14 +234,14 @@ document.addEventListener('DOMContentLoaded', function() {
     fetchTemperature(18.6734, 105.6923);
   }
 
-  const initTetExtras = () => {
-    const greetingEl = document.getElementById('tet-greeting');
+  const initThangThanhNienExtras = () => {
+    const greetingEl = document.getElementById('tn-greeting');
     const greetings = [
-      'Đón Tết an tâm – Máy tính khỏe – Học tập và làm việc suôn sẻ.',
-      'Khởi đầu năm mới với hệ thống ổn định và dữ liệu an toàn.',
-      'Tết vui trọn vẹn khi máy khỏe và mọi thứ vận hành mượt mà.',
-      'An toàn số – dữ liệu sạch – khởi sắc năm mới.',
-      'Máy khỏe – Tết vui – học tập và làm việc không gián đoạn.'
+      'Chào Tháng Thanh niên năng động – Máy tính khỏe – Học tập và làm việc suôn sẻ.',
+      'Tháng Thanh niên tiến bước với hệ thống ổn định và dữ liệu an toàn.',
+      'Thanh niên vui trọn vẹn khi máy khỏe và mọi thứ vận hành mượt mà.',
+      'An toàn số – dữ liệu sạch – khởi sắc tháng hành động.',
+      'Máy khỏe – Thanh niên năng động – học tập và làm việc không gián đoạn.'
     ];
     if (greetingEl) {
       greetingEl.textContent = greetings[Math.floor(Math.random() * greetings.length)];
@@ -253,7 +253,7 @@ document.addEventListener('DOMContentLoaded', function() {
       minutes: document.getElementById('cd-minutes'),
       seconds: document.getElementById('cd-seconds')
     };
-    const targetDate = new Date('2026-02-16T23:59:59+07:00');
+    const targetDate = new Date('2026-03-31T23:59:59+07:00');
     const updateCountdown = () => {
       if (!countdownEls.days) return;
       const now = new Date();
@@ -392,7 +392,7 @@ document.addEventListener('DOMContentLoaded', function() {
       const tips = [
         'Mẹo: Dọn file tạm bằng Disk Cleanup để giải phóng dung lượng.',
         'Mẹo: Gỡ app không dùng để tăng tốc khởi động.',
-        'Mẹo: Cập nhật Windows để vá lỗi bảo mật trước Tết.'
+        'Mẹo: Cập nhật Windows để bảo mật trong Tháng Thanh niên.'
       ];
       const shortcuts = [
         'Shortcut: Win + V mở lịch sử clipboard.',
@@ -400,8 +400,8 @@ document.addEventListener('DOMContentLoaded', function() {
         'Shortcut: Ctrl + Shift + Esc mở Task Manager.'
       ];
       const wishes = [
-        'Chúc năm mới an khang, dữ liệu an toàn, công việc suôn sẻ.',
-        'Chúc Tết vui khỏe, máy tính chạy mượt cả năm.',
+        'Chúc Tháng Thanh niên năng động, dữ liệu an toàn, công việc suôn sẻ.',
+        'Chúc Tháng Thanh niên vui khỏe, máy tính chạy mượt cả tháng.',
         'Chúc bạn một năm mới bình an và sáng tạo không giới hạn.'
       ];
       luckyBtn.addEventListener('click', () => {
@@ -734,7 +734,7 @@ document.addEventListener('DOMContentLoaded', function() {
     window.addEventListener('resize', resize);
   };
 
-  initTetExtras();
+  initThangThanhNienExtras();
   initFireworks();
 
   // Tip image viewer (lightbox)

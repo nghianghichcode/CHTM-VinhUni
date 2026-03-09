@@ -1,0 +1,95 @@
+/* THÁNG THANH NIÊN 2026 (Blue) – Based on Tet 2026 theme layout, palette only. */
+@import url('/css/theme-tet.css');
+
+/* Primary palette overrides */
+:root {
+  --bg-gradient: linear-gradient(180deg, #0b2a5b 0%, #081a3a 55%, #050f24 100%);
+  --bg: #081a3a;
+  --surface: rgba(8, 26, 58, 0.52);
+  --surface-strong: rgba(9, 30, 68, 0.82);
+  --border: rgba(147, 197, 253, 0.22);
+  --text: #eef6ff;
+  --text-muted: rgba(226, 232, 240, 0.78);
+
+  /* Keep variable names used by JS/CSS, just recolor */
+  --tet-blue: #2563eb;
+  --tet-orange: #0ea5e9;
+  --tet-gold: #93c5fd;
+  --tet-red: #2563eb;
+
+  --accent: #93c5fd;
+  --accent2: #0ea5e9;
+  --cta-gradient: linear-gradient(90deg, #2563eb, #0ea5e9);
+  --focus: rgba(147, 197, 253, 0.55);
+
+  --panel-bg: rgba(8, 26, 58, 0.62);
+  --panel-border: rgba(147, 197, 253, 0.26);
+  --panel-shadow: 0 18px 40px rgba(0, 0, 0, 0.32);
+
+  --header-bg: rgba(7, 18, 41, 0.82);
+  --header-border: rgba(147, 197, 253, 0.18);
+  --header-border-strong: rgba(147, 197, 253, 0.26);
+  --header-link: #eef6ff;
+  --header-link-hover: #93c5fd;
+
+  --drawer-bg: rgba(7, 18, 41, 0.96);
+  --drawer-bg-strong: rgba(5, 14, 32, 0.98);
+  --drawer-overlay: rgba(2, 6, 23, 0.72);
+  --drawer-outline: rgba(147, 197, 253, 0.18);
+}
+
+html.dark {
+  --bg-gradient: linear-gradient(180deg, #060c1c 0%, #040915 60%, #030611 100%);
+  --bg: #040915;
+  --surface: rgba(4, 10, 21, 0.64);
+  --surface-strong: rgba(5, 12, 26, 0.9);
+  --border: rgba(147, 197, 253, 0.16);
+  --text: #eef6ff;
+  --text-muted: rgba(203, 213, 225, 0.74);
+
+  --cta-gradient: linear-gradient(90deg, #60a5fa, #0ea5e9);
+  --focus: rgba(96, 165, 250, 0.55);
+  --header-bg: rgba(4, 10, 21, 0.86);
+  --drawer-bg: rgba(4, 10, 21, 0.96);
+  --drawer-bg-strong: rgba(3, 8, 18, 0.98);
+  --drawer-overlay: rgba(0, 0, 0, 0.75);
+}
+
+/* Key hard-coded warm areas from theme-tet.css → cool blues */
+body.tet-page {
+  background:
+    radial-gradient(circle at 15% 20%, rgba(147, 197, 253, 0.14), transparent 40%),
+    radial-gradient(circle at 85% 10%, rgba(14, 165, 233, 0.12), transparent 35%),
+    var(--bg-gradient);
+}
+
+body.tet-page::after {
+  background:
+    radial-gradient(circle at 35% 45%, rgba(147, 197, 253, 0.18), transparent 60%),
+    radial-gradient(circle at 70% 35%, rgba(14, 165, 233, 0.14), transparent 60%);
+}
+
+.section-line {
+  background: linear-gradient(90deg, var(--tet-gold), var(--tet-blue));
+  box-shadow: 0 6px 16px rgba(14, 165, 233, 0.28);
+}
+
+/* Footer: shift warm gradient to blue */
+.site-footer {
+  background: linear-gradient(180deg, rgba(7, 18, 41, 0.92), rgba(3, 8, 18, 0.98));
+}
+
+/* Buttons keep same behavior, just blue glow */
+.btn,
+a.btn,
+button.btn {
+  border: 1px solid rgba(147, 197, 253, 0.32);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.28);
+}
+
+/* Lanterns: cooler glow */
+body.tet-page .header-lantern,
+body.auth-page.tet-page .lantern {
+  box-shadow: 0 0 22px rgba(147, 197, 253, 0.45), 0 0 44px rgba(14, 165, 233, 0.28);
+}
+
