@@ -8,7 +8,7 @@
     <div class="tip-content">
       <%- tip.content %>
     </div>
-    <p class="tip-meta">Danh mục: <%= tip.category?.name || '' %> | Tags: <%= (tip.tags && tip.tags.length) ? tip.tags.map(t => t.name).join(', ') : '' %></p>
+    <p class="tip-meta">Danh mục: <%= tip.category?.name || '' %> | Tags: <%= (tip.tags && tip.tags.length) ? tip.tags.filter(Boolean).map(t => t.name).join(', ') : '' %></p>
   </div>
   <section style="margin-top:2em;">
     <h3>Bài liên quan</h3>

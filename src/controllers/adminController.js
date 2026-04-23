@@ -4,6 +4,7 @@ const Category = require('../models/Category');
 const Tag = require('../models/Tag');
 const Ticket = require('../models/Ticket');
 const Contact = require('../models/Contact');
+const SiteStat = require('../models/SiteStat');
 const mongoose = require('mongoose');
 const slugifyVN = require('../utils/slugify');
 const { getMeta } = require('../utils/meta');
@@ -37,6 +38,7 @@ exports.dashboard = async (req, res) => {
   const stats = {
     tips: await Tip.countDocuments(),
     tickets: await Ticket.countDocuments(),
+    visits: (await SiteStat.findOne({ key: 'visits' }))?.value || 0,
     ticketsByStatus: {
       NEW: await Ticket.countDocuments({ status: 'NEW' }),
       ACCEPTED: await Ticket.countDocuments({ status: 'ACCEPTED' }),

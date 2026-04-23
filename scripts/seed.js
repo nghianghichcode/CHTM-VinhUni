@@ -704,7 +704,7 @@ const tickets = [
     email: 'user1@congthuthuat.vn',
     deviceType: 'Laptop',
     os: 'Windows 10',
-    urgency: 'medium',
+    urgency: 'medium',  
     location: 'Hà Nội',
     preferredTime: 'Sáng',
     description: 'Cần backup dữ liệu.',

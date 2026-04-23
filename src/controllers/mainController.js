@@ -4,6 +4,7 @@ const Tag = require('../models/Tag');
 const Contact = require('../models/Contact');
 const Ticket = require('../models/Ticket');
 const User = require('../models/User');
+const SiteStat = require('../models/SiteStat');
 const { getMeta } = require('../utils/meta');
 const { isRequired, isEmail, minLength } = require('../utils/validate');
 
@@ -15,7 +16,8 @@ exports.home = async (req, res) => {
   const stats = {
     tips: await Tip.countDocuments({ status: 'published' }),
     tickets: await Ticket.countDocuments(),
-    users: await User.countDocuments()
+    users: await User.countDocuments(),
+    visits: (await SiteStat.findOne({ key: 'visits' }))?.value || 0
   };
   res.render('home', {
     featuredTips,

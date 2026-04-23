@@ -794,6 +794,14 @@ body:not(.home) main { padding-top: var(--header-height); }
 }
 .profile-table-card {
   padding: 1.4em;
+  width: 100%;
+  max-width: none;
+  min-width: 0;
+  overflow-x: auto;
+}
+.profile-table {
+  width: 100%;
+  min-width: 620px;
 }
 .profile-table th { color: #e2e8f0; }
 .status-pill {
@@ -863,6 +871,7 @@ body:not(.home) main { padding-top: var(--header-height); }
 @media (max-width: 640px) {
   .profile-stats { grid-template-columns: 1fr; }
   .profile-actions { grid-template-columns: 1fr; }
+  .profile-table { min-width: 560px; }
 }
 input, select, textarea {
   width: 100%;

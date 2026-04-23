@@ -40,9 +40,16 @@ exports.list = async (req, res) => {
 exports.detail = async (req, res) => {
   const tip = await Tip.findOne({ slug: req.params.slug, status: 'published' }).populate('category tags');
   if (!tip) return res.status(404).render('error/404');
-  tip.views += 1;
-  await tip.save();
-  const related = await Tip.find({ _id: { $ne: tip._id }, category: tip.category, status: 'published' }).limit(4);
+
+  // Avoid full document validation when counting views for legacy records.
+  await Tip.updateOne({ _id: tip._id }, { $inc: { views: 1 } });
+
+  const categoryId = tip.category?._id || tip.category;
+  const related = await Tip.find({
+    _id: { $ne: tip._id },
+    category: categoryId,
+    status: 'published'
+  }).limit(4);
   res.render('tips/detail', {
     tip,
     related,

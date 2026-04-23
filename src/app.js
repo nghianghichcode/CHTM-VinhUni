@@ -3,6 +3,7 @@ const express = require('express');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
 const mongoose = require('mongoose');
+const dns = require('dns');
 const helmet = require('helmet');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
@@ -14,10 +15,23 @@ const { getMongoUri } = require('./config/mongoUri');
 const { sanitizeBody } = require('./utils/sanitize');
 const { notFound, errorHandler } = require('./middlewares/error');
 const { setLocals } = require('./middlewares/locals');
+const SiteStat = require('./models/SiteStat');
 
 const app = express();
 if (process.env.VERCEL) {
   app.set('trust proxy', 1);
+}
+const dnsServers = (process.env.DNS_SERVERS || '')
+  .split(',')
+  .map((server) => server.trim())
+  .filter(Boolean);
+if (dnsServers.length) {
+  try {
+    dns.setServers(dnsServers);
+    console.log('DNS servers set:', dnsServers);
+  } catch (err) {
+    console.warn('Failed to set DNS servers:', err?.message || err);
+  }
 }
 const guardLogState = global.__mongoGuardLog || (global.__mongoGuardLog = {
   target: false,
@@ -204,6 +218,27 @@ app.use(sanitizeBody);
 
 // Set locals for views
 app.use(setLocals);
+
+function shouldCountVisit(req) {
+  if (req.method !== 'GET') return false;
+  if (!req.accepts('html')) return false;
+  if (isAssetRequest(req.path)) return false;
+  if (req.path.startsWith('/admin') || req.path.startsWith('/auth')) return false;
+  return true;
+}
+
+app.use((req, res, next) => {
+  if (shouldCountVisit(req)) {
+    SiteStat.findOneAndUpdate(
+      { key: 'visits' },
+      { $inc: { value: 1 } },
+      { upsert: true, new: true }
+    ).catch(err => {
+      console.error('Visit counter update failed:', err?.message || err);
+    });
+  }
+  next();
+});
 
 // Rate limiters
 const loginLimiter = rateLimit({

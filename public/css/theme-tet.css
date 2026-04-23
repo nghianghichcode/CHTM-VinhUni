@@ -1473,35 +1473,12 @@ section,
 
 body.tet-page {
   color: var(--text);
-  background: radial-gradient(circle at 15% 20%, rgba(251, 191, 36, 0.14), transparent 40%),
-              radial-gradient(circle at 85% 10%, rgba(239, 68, 68, 0.12), transparent 35%),
-              var(--bg-gradient);
+  background: url("/images/backgroundtet.jpg") center/cover no-repeat fixed;
 }
 
-body.tet-page::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
-  background-size: 42px 42px;
-  opacity: 0.4;
-  pointer-events: none;
-  z-index: 0;
-}
-
+body.tet-page::before,
 body.tet-page::after {
-  content: "";
-  position: fixed;
-  inset: -10% -10% auto -10%;
-  height: 55vh;
-  background: radial-gradient(circle at 35% 45%, rgba(251, 191, 36, 0.2), transparent 60%),
-              radial-gradient(circle at 70% 35%, rgba(239, 68, 68, 0.16), transparent 60%);
-  filter: blur(24px);
-  opacity: 0.4;
-  pointer-events: none;
-  z-index: 0;
+  content: none;
 }
 
 body.tet-page main,
@@ -2032,4 +2009,51 @@ body.home .leader-node:focus .leader-avatar {
     transform: none;
     pointer-events: auto;
   }
+}
+
+/* Readability fix: avoid washed-out section text on bright Tet background */
+html:not(.dark) body.tet-page .section-head h2 {
+  color: #5a1f1b !important;
+  text-shadow: none !important;
+  filter: none !important;
+  font-weight: 800;
+}
+
+html:not(.dark) body.tet-page .section-head p {
+  color: rgba(90, 31, 27, 0.86) !important;
+  text-shadow: none !important;
+}
+
+html:not(.dark) body.tet-page .section-head h2.swipe-in,
+html:not(.dark) body.tet-page .section-head p.swipe-in {
+  opacity: 1 !important;
+  transform: none !important;
+  transition: none !important;
+}
+
+/* Readability fix: leaders + sidebar text on bright Tet background */
+html:not(.dark) body.home.tet-page .leader-period,
+html:not(.dark) body.home.tet-page .leader-node h3 {
+  color: #5a1f1b !important;
+  text-shadow: none !important;
+}
+
+html:not(.dark) body.home.tet-page .leader-node h3.swipe-in {
+  opacity: 1 !important;
+  transform: none !important;
+  transition: none !important;
+}
+
+html:not(.dark) body.tet-page .sidebar h3,
+html:not(.dark) body.tet-page .sidebar li,
+html:not(.dark) body.tet-page .sidebar a,
+html:not(.dark) body.tet-page .sidebar b {
+  color: #5a1f1b !important;
+  text-shadow: none !important;
+}
+
+html:not(.dark) body.tet-page .tags a {
+  background: rgba(122, 63, 31, 0.14) !important;
+  border: 1px solid rgba(122, 63, 31, 0.22) !important;
+  color: #5a1f1b !important;
 }
