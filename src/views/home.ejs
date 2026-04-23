@@ -2,26 +2,27 @@
   <div class="golden-rings" aria-hidden="true"></div>
   <div class="container hero-inner">
     <div class="hero-content">
-      <span class="hero-badge">ĐÓN TẾT AN TÂM · XUÂN SỐ VINHUNI</span>
-      <h1 data-typewriter="hero-title" data-text="Tết Bính Ngọ 2026\n[accent:Năm Mới], An Khang">Tết Bính Ngọ 2026<br><span class="accent">Máy Khỏe</span>, Tết Vui</h1>
-      <p data-typewriter="hero-desc" data-text="Kiểm tra, bảo vệ và tối ưu máy tính trước thềm năm mới.">Kiểm tra, bảo vệ và tối ưu máy tính trước thềm năm mới.</p>
-      <div class="hero-message" id="tet-greeting">Đón Tết an tâm – Máy tính khỏe – Học tập và làm việc suôn sẻ.</div>
+      <span class="hero-badge">HỖ TRỢ SINH VIÊN · CỨU HỘ NHANH</span>
+      <h1 data-typewriter="hero-title" data-text="Bảo trì máy tính\n[accent:Tăng tốc học tập]">Bảo trì máy tính<br><span class="accent">Tăng tốc học tập</span></h1>
+      <p data-typewriter="hero-desc" data-text="Đội Cứu hộ máy tính VinhUni luôn sẵn sàng hỗ trợ các vấn đề về phần cứng, phần mềm và tối ưu hóa thiết bị cho sinh viên.">Đội Cứu hộ máy tính VinhUni luôn sẵn sàng hỗ trợ các vấn đề về phần cứng, phần mềm và tối ưu hóa thiết bị cho sinh viên.</p>
+      <div class="hero-message" id="tet-greeting">Đội Cứu hộ luôn trực để giúp bạn học tập mượt mà và an toàn hơn.</div>
+      <div class="countdown-label">Đếm ngược đến kết thúc học kỳ</div>
       <div class="countdown" id="tet-countdown" aria-live="polite">
         <div class="count-item"><strong id="cd-days">00</strong><span>Ngày</span></div>
         <div class="count-item"><strong id="cd-hours">00</strong><span>Giờ</span></div>
         <div class="count-item"><strong id="cd-minutes">00</strong><span>Phút</span></div>
         <div class="count-item"><strong id="cd-seconds">00</strong><span>Giây</span></div>
       </div>
-      <div class="device-panel" aria-live="polite">
-        <div class="device-head">
-          <span>Thiết bị truy cập</span>
+      <div class="quick-rescue" aria-live="polite">
+        <div class="quick-head">
+          <span>Yêu cầu cứu hộ nhanh</span>
         </div>
-        <div class="device-grid" id="device-grid">
-          <div class="device-item"><span>Thiết bị</span><strong id="device-type">--</strong></div>
-          <div class="device-item"><span>Hệ điều hành</span><strong id="device-os">--</strong></div>
-          <div class="device-item"><span>Trình duyệt</span><strong id="device-browser">--</strong></div>
-        </div>
-        <div class="device-note">* Thông tin nhận diện cơ bản từ trình duyệt.</div>
+        <form class="quick-form" method="post" action="/rescue-request">
+          <input type="text" name="name" placeholder="Tên sinh viên" required>
+          <input type="tel" name="phone" placeholder="Số điện thoại" required>
+          <textarea name="issue" rows="3" placeholder="Lỗi đang gặp phải" required></textarea>
+          <button type="submit" class="btn btn-primary">Gửi yêu cầu ngay</button>
+        </form>
       </div>
       <div class="cta-group">
         <a href="/tips" class="btn btn-primary">Khám phá ngay</a>
@@ -29,6 +30,33 @@
       </div>
     </div>
     <div class="hero-decor" aria-hidden="true"></div>
+  </div>
+</section>
+<section class="latest-news container">
+  <div class="section-head">
+    <h2>Thủ thuật &amp; Tin tức</h2>
+    <p>Cập nhật nhanh những mẹo hữu ích và cảnh báo an toàn số cho sinh viên.</p>
+    <div class="section-line"></div>
+  </div>
+  <div class="news-grid">
+    <article class="news-card">
+      <div class="news-tag">Thủ thuật</div>
+      <h3>Cách vệ sinh laptop tại phòng trọ</h3>
+      <p>Checklist nhanh giúp máy sạch, mát và bền hơn khi học tập hằng ngày.</p>
+      <a href="/tips" class="news-link">Xem chi tiết</a>
+    </article>
+    <article class="news-card">
+      <div class="news-tag">Danh sách</div>
+      <h3>Top 5 phần mềm cần thiết cho sinh viên năm nhất</h3>
+      <p>Các công cụ học tập, ghi chú và bảo mật nên cài ngay khi vào trường.</p>
+      <a href="/tips" class="news-link">Xem chi tiết</a>
+    </article>
+    <article class="news-card">
+      <div class="news-tag">Cảnh báo</div>
+      <h3>Cảnh báo link lạ đánh cắp tài khoản E-learning</h3>
+      <p>Nhận diện dấu hiệu giả mạo và cách bảo vệ tài khoản học tập của bạn.</p>
+      <a href="/tips" class="news-link">Xem chi tiết</a>
+    </article>
   </div>
 </section>
 <section class="tet-tech container">

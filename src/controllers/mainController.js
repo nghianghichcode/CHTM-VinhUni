@@ -2,11 +2,12 @@ const Tip = require('../models/Tip');
 const Category = require('../models/Category');
 const Tag = require('../models/Tag');
 const Contact = require('../models/Contact');
+const RescueRequest = require('../models/RescueRequest');
 const Ticket = require('../models/Ticket');
 const User = require('../models/User');
 const SiteStat = require('../models/SiteStat');
 const { getMeta } = require('../utils/meta');
-const { isRequired, isEmail, minLength } = require('../utils/validate');
+const { isRequired, isEmail, isPhone, minLength } = require('../utils/validate');
 
 exports.home = async (req, res) => {
   const featuredTips = await Tip.find({ status: 'published', isFeatured: true }).populate('category tags').limit(6).sort({ createdAt: -1 });
@@ -47,4 +48,19 @@ exports.contactPost = async (req, res) => {
   await Contact.create({ name: name.trim(), email: email.trim(), message: message.trim() });
   req.flash('success', 'Cảm ơn bạn đã liên hệ! Chúng tôi sẽ phản hồi sớm.');
   res.redirect('/contact');
+};
+
+exports.rescueRequestPost = async (req, res) => {
+  const { name, phone, issue } = req.body;
+  if (!isRequired(name) || !isPhone(phone) || !minLength(issue, 8)) {
+    req.flash('error', 'Vui lòng nhập đầy đủ thông tin hợp lệ (mô tả lỗi tối thiểu 8 ký tự).');
+    return res.redirect('/');
+  }
+  await RescueRequest.create({
+    name: name.trim(),
+    phone: phone.trim(),
+    issue: issue.trim()
+  });
+  req.flash('success', 'Đã ghi nhận yêu cầu! Đội sẽ liên hệ với bạn sớm nhất.');
+  res.redirect('/');
 };

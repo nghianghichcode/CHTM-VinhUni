@@ -237,11 +237,11 @@ document.addEventListener('DOMContentLoaded', function() {
   const initTetExtras = () => {
     const greetingEl = document.getElementById('tet-greeting');
     const greetings = [
-      'Đón Tết an tâm – Máy tính khỏe – Học tập và làm việc suôn sẻ.',
-      'Khởi đầu năm mới với hệ thống ổn định và dữ liệu an toàn.',
-      'Tết vui trọn vẹn khi máy khỏe và mọi thứ vận hành mượt mà.',
-      'An toàn số – dữ liệu sạch – khởi sắc năm mới.',
-      'Máy khỏe – Tết vui – học tập và làm việc không gián đoạn.'
+      'Đội Cứu hộ luôn trực để hỗ trợ bạn học tập mượt mà hơn.',
+      'Sẵn sàng xử lý sự cố phần mềm, phần cứng và tối ưu máy tính.',
+      'Học tập an tâm với thiết bị ổn định và dữ liệu được bảo vệ.',
+      'Cần trợ giúp? Đội kỹ thuật luôn ở gần bạn.',
+      'Tăng tốc thiết bị để học tập không gián đoạn.'
     ];
     if (greetingEl) {
       greetingEl.textContent = greetings[Math.floor(Math.random() * greetings.length)];
@@ -253,7 +253,7 @@ document.addEventListener('DOMContentLoaded', function() {
       minutes: document.getElementById('cd-minutes'),
       seconds: document.getElementById('cd-seconds')
     };
-    const targetDate = new Date('2026-02-16T23:59:59+07:00');
+    const targetDate = new Date('2026-06-30T23:59:59+07:00');
     const updateCountdown = () => {
       if (!countdownEls.days) return;
       const now = new Date();
