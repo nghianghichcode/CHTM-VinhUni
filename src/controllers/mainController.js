@@ -11,6 +11,7 @@ const { isRequired, isEmail, isPhone, minLength } = require('../utils/validate')
 
 exports.home = async (req, res) => {
   const featuredTips = await Tip.find({ status: 'published', isFeatured: true }).populate('category tags').limit(6).sort({ createdAt: -1 });
+  const latestTips = await Tip.find({ status: 'published' }).populate('category').limit(3).sort({ createdAt: -1 });
   const categories = await Category.find();
   const topTips = await Tip.find({ status: 'published' }).sort({ views: -1 }).limit(5);
   const tags = await Tag.find().limit(12);
@@ -22,6 +23,7 @@ exports.home = async (req, res) => {
   };
   res.render('home', {
     featuredTips,
+    latestTips,
     categories,
     topTips,
     tags,

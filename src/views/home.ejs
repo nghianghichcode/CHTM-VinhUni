@@ -39,92 +39,91 @@
     <div class="section-line"></div>
   </div>
   <div class="news-grid">
-    <article class="news-card">
-      <div class="news-tag">Thủ thuật</div>
-      <h3>Cách vệ sinh laptop tại phòng trọ</h3>
-      <p>Checklist nhanh giúp máy sạch, mát và bền hơn khi học tập hằng ngày.</p>
-      <a href="/tips" class="news-link">Xem chi tiết</a>
-    </article>
-    <article class="news-card">
-      <div class="news-tag">Danh sách</div>
-      <h3>Top 5 phần mềm cần thiết cho sinh viên năm nhất</h3>
-      <p>Các công cụ học tập, ghi chú và bảo mật nên cài ngay khi vào trường.</p>
-      <a href="/tips" class="news-link">Xem chi tiết</a>
-    </article>
-    <article class="news-card">
-      <div class="news-tag">Cảnh báo</div>
-      <h3>Cảnh báo link lạ đánh cắp tài khoản E-learning</h3>
-      <p>Nhận diện dấu hiệu giả mạo và cách bảo vệ tài khoản học tập của bạn.</p>
-      <a href="/tips" class="news-link">Xem chi tiết</a>
-    </article>
+    <% if (latestTips && latestTips.length) { %>
+      <% latestTips.forEach(tip => { %>
+        <article class="news-card">
+          <div class="news-tag"><%= tip.category?.name || 'Thủ thuật' %></div>
+          <h3><%= tip.title %></h3>
+          <p><%= tip.excerpt %></p>
+          <a href="/tips/<%= tip.slug %>" class="news-link">Xem chi tiết</a>
+        </article>
+      <% }) %>
+    <% } else { %>
+      <article class="news-card">
+        <div class="news-tag">Cập nhật</div>
+        <h3>Chưa có bài mới</h3>
+        <p>Đội sẽ cập nhật các thủ thuật hữu ích trong thời gian sớm nhất.</p>
+        <a href="/tips" class="news-link">Xem thủ thuật</a>
+      </article>
+    <% } %>
   </div>
 </section>
 <section class="tet-tech container">
   <div class="section-head">
-    <h2>Góc Tết Công Nghệ</h2>
-    <p>Dọn dẹp, bảo vệ và tăng tốc để máy tính sẵn sàng cho năm mới.</p>
+    <h2>Góc Bảo Trì Công Nghệ</h2>
+    <p>Giữ thiết bị ổn định, an toàn và sẵn sàng cho học tập mỗi ngày.</p>
     <div class="section-line"></div>
   </div>
   <div class="tet-tech-grid">
     <article class="tet-card">
       <div class="tet-icon">🧹</div>
-      <h3>Dọn rác máy tính đón Tết</h3>
-      <p>Giải phóng dung lượng, xóa file tạm, làm mới hệ thống.</p>
+      <h3>Dọn rác máy tính định kỳ</h3>
+      <p>Giải phóng dung lượng, xóa file tạm và làm mới hệ thống.</p>
     </article>
     <article class="tet-card">
       <div class="tet-icon">🛡️</div>
-      <h3>Diệt virus – chống mã độc cuối năm</h3>
-      <p>Quét bảo mật, tăng cường phòng vệ dữ liệu quan trọng.</p>
+      <h3>Bảo vệ khỏi virus và mã độc</h3>
+      <p>Quét bảo mật, cập nhật phòng vệ cho dữ liệu học tập.</p>
     </article>
     <article class="tet-card">
       <div class="tet-icon">💾</div>
       <h3>Sao lưu dữ liệu quan trọng</h3>
-      <p>Backup nhanh tài liệu, ảnh, học tập trước kỳ nghỉ dài.</p>
+      <p>Backup tài liệu, ảnh, đồ án để tránh mất dữ liệu.</p>
     </article>
     <article class="tet-card">
       <div class="tet-icon">⚡</div>
-      <h3>Tăng tốc máy cho năm mới</h3>
+      <h3>Tăng tốc máy cho học kỳ</h3>
       <p>Tối ưu hiệu năng để học tập và làm việc mượt mà hơn.</p>
     </article>
   </div>
 </section>
 <section class="tet-lucky container">
   <div class="section-head">
-    <h2>Lì xì công nghệ</h2>
-    <p>Nhận một mẹo nhỏ, một phím tắt hay một lời chúc đầu năm.</p>
+    <h2>Mẹo nhanh mỗi ngày</h2>
+    <p>Nhận một mẹo nhỏ, một phím tắt hay một thủ thuật hữu ích.</p>
     <div class="section-line"></div>
   </div>
   <div class="lucky-box">
-    <button type="button" class="btn btn-primary" id="lucky-btn" data-fireworks-trigger>Nhận lì xì 2026</button>
-    <div class="lucky-result" id="lucky-result">Sẵn sàng nhận lì xì ✨</div>
+    <button type="button" class="btn btn-primary" id="lucky-btn" data-fireworks-trigger>Nhận mẹo nhanh</button>
+    <div class="lucky-result" id="lucky-result">Sẵn sàng nhận mẹo hữu ích ✨</div>
   </div>
 </section>
 <section class="tet-timeline container">
   <div class="section-head">
-    <h2>Timeline Xuân của Đội Cứu Hộ</h2>
-    <p>Hành trình hỗ trợ xuyên suốt trước, trong và sau Tết.</p>
+    <h2>Lịch hỗ trợ học kỳ</h2>
+    <p>Các giai đoạn hỗ trợ xuyên suốt trong học kỳ.</p>
     <div class="section-line"></div>
   </div>
   <div class="timeline-vertical">
     <div class="timeline-item">
       <div class="timeline-dot"></div>
       <div class="timeline-content">
-        <h3>Trước Tết</h3>
-        <p>Tổng kiểm tra hệ thống, tối ưu và sao lưu dữ liệu.</p>
+        <h3>Đầu học kỳ</h3>
+        <p>Kiểm tra thiết bị, cài phần mềm, tối ưu hệ thống.</p>
       </div>
     </div>
     <div class="timeline-item">
       <div class="timeline-dot"></div>
       <div class="timeline-content">
-        <h3>Trong Tết</h3>
-        <p>Hỗ trợ online, xử lý sự cố nhanh trong kỳ nghỉ.</p>
+        <h3>Giữa học kỳ</h3>
+        <p>Hỗ trợ online, xử lý lỗi và vệ sinh định kỳ.</p>
       </div>
     </div>
     <div class="timeline-item">
       <div class="timeline-dot"></div>
       <div class="timeline-content">
-        <h3>Sau Tết</h3>
-        <p>Khôi phục – tối ưu – cài đặt để máy chạy ổn định.</p>
+        <h3>Cuối học kỳ</h3>
+        <p>Back up dữ liệu, tăng tốc, sẵn sàng thi cử.</p>
       </div>
     </div>
   </div>
@@ -152,8 +151,8 @@
 </section>
 <section class="moments container">
   <div class="section-head">
-    <h2>Khoảnh khắc Tết VinhUni</h2>
-    <p>Thành viên trực hỗ trợ, workshop cuối năm và hoạt động cộng đồng.</p>
+    <h2>Khoảnh khắc hoạt động</h2>
+    <p>Hỗ trợ kỹ thuật, workshop và hoạt động cộng đồng.</p>
   </div>
   <div class="moments-slider" data-slider="moments">
     <button class="slider-btn prev" type="button" aria-label="Trước">‹</button>
