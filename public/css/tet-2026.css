@@ -23,6 +23,7 @@
   --header-text: var(--white);
   --header-link: var(--white);
   --header-link-hover: var(--tet-gold);
+  --header-bg: #6b0f0f;
   --card: var(--surface);
   --header-border: rgba(255, 255, 255, 0.2);
   --primary-rgb: 200 29 37;
@@ -54,6 +55,7 @@ html.dark {
   --header-text: #F8FAFC;
   --header-link: #F8FAFC;
   --header-link-hover: var(--tet-gold);
+  --header-bg: #4b0c0c;
   --card: var(--surface);
   --header-border: rgba(255, 255, 255, 0.14);
   --primary-rgb: 248 113 113;
@@ -96,7 +98,7 @@ a:hover { color: var(--link-hover); }
 
 /* Header */
 .site-header {
-  background: var(--glass);
+  background: var(--header-bg);
   -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid transparent;

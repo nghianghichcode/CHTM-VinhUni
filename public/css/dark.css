@@ -219,6 +219,16 @@ body.auth-page .logo img {
   padding: 3px !important;
 }
 
+html.dark body.tet-page,
+html.dark body.tet-page main {
+  background: #111827 !important;
+  background-image:
+    linear-gradient(rgba(148,163,184,0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(148,163,184,0.08) 1px, transparent 1px) !important;
+  background-size: 32px 32px !important;
+  background-position: top center !important;
+}
+
 body.auth-page .footer-logos img {
   height: 30px;
   width: 30px;

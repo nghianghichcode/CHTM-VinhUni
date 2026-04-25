@@ -93,7 +93,7 @@
             <% tickets.forEach(t => { %>
               <tr>
                 <td><%= t._id.toString().slice(-6) %></td>
-                <td><span class="status-pill"><%= t.status %></span></td>
+                <td><span class="status-pill status-<%= t.status.toLowerCase().replace(/[_\s]+/g, '-') %>"><%= t.status %></span></td>
                 <td><%= t.deviceType %> - <%= t.os %></td>
                 <td><%= new Date(t.createdAt).toLocaleString('vi-VN') %></td>
                 <td><a class="link-cta" href="/rescue/<%= t._id %>">Chi tiết</a></td>
