@@ -27,7 +27,7 @@ function buildMongoUriFromParts() {
     ? `${options}&appName=${encodeURIComponent(appName)}`
     : options;
 
-  return `mongodb+srv://<redacted>
+  return `mongodb+srv://${encodedUser}:${encodedPass}@${host}/${db}?${fullOptions}`;
 }
 
 function getMongoUri() {

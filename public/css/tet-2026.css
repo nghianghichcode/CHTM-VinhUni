@@ -238,7 +238,7 @@ body.auth-page .main-nav {
 
 .hero p { color: var(--muted); }
 
-  min-height: 0;
+min-height: 0;
 
 .hero h1 { font-weight: 700; letter-spacing: 0.2px; }
 
